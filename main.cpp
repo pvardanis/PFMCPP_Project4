@@ -33,7 +33,115 @@
  */
 
 #include <iostream>
+
+struct FloatType
+{
+    float add( float lhs, float rhs );
+    float subtract( float lhs, float rhs );
+    float multiply( float lhs, float rhs );
+    float divide( float lhs, float rhs );
+};
+
+float FloatType::add( float lhs, float rhs )
+{
+    return lhs + rhs;
+}
+
+float FloatType::subtract( float lhs, float rhs )
+{
+    return lhs - rhs;
+}
+
+float FloatType::multiply( float lhs, float rhs )
+{
+    return lhs * rhs;
+}
+
+float FloatType::divide( float lhs, float rhs )
+{
+    return lhs / rhs;
+}
+
+struct DoubleType
+{
+    double add( double lhs, double rhs );
+    double subtract( double lhs, double rhs );
+    double multiply( double lhs, double rhs );
+    double divide( double lhs, double rhs );
+};
+
+double DoubleType::add( double lhs, double rhs )
+{
+    return lhs + rhs;
+}
+
+double DoubleType::subtract( double lhs, double rhs )
+{
+    return lhs - rhs;
+}
+
+double DoubleType::multiply( double lhs, double rhs )
+{
+    return lhs * rhs;
+}
+
+double DoubleType::divide( double lhs, double rhs )
+{
+    return lhs / rhs;
+}
+
+struct IntType
+{
+    int add( int lhs, int rhs );
+    int subtract( int lhs, int rhs );
+    int multiply( int lhs, int rhs );
+    int divide( int lhs, int rhs );
+};
+
+int IntType::add( int lhs, int rhs )
+{
+    return lhs + rhs;
+}
+
+int IntType::subtract( int lhs, int rhs )
+{
+    return lhs - rhs;
+}
+
+int IntType::multiply( int lhs, int rhs )
+{
+    return lhs * rhs;
+}
+
+int IntType::divide( int lhs, int rhs )
+{
+    if (rhs == 0)
+    {
+        std::cout << "Cannot divide by zero!" << std::endl;
+    }
+    return lhs / rhs;
+}
+
 int main()
 {
+    FloatType ft;
+    auto ftAdd = ft.add( 5.25f, 4.75f );
+    std::cout << "result of ft.add(): " << ftAdd << std::endl;
+    auto ftDivide = ft.divide( 2.25f, 0.f );
+    std::cout << "result of ft.divide(): " << ftDivide << std::endl;
+
+
+    DoubleType dt;
+    auto dtSubtract = dt.subtract( 5.2597, -1.75256 );
+    std::cout << "result of dt.subtract(): " << dtSubtract << std::endl;
+    auto dtDivide = dt.divide( 25.45, 0. );
+    std::cout << "result of dt.divide(): " << dtDivide << std::endl;
+
+    IntType it;
+    auto itMultiply = it.multiply( 25, -4 );
+    std::cout << "result of it.multiply(): " << itMultiply << std::endl;
+    auto itDivide = it.divide( 22, 0 );
+    std::cout << "result of it.divide(): " << itDivide << std::endl;
+
     std::cout << "good to go!" << std::endl;
 }
