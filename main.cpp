@@ -118,6 +118,7 @@ int IntType::divide( int lhs, int rhs )
     if (rhs == 0)
     {
         std::cout << "Cannot divide by zero!" << std::endl;
+        return 0;
     }
     return lhs / rhs;
 }
