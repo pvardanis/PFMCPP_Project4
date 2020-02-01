@@ -233,7 +233,7 @@ IntType& IntType::divide( int myNumber )
 {
     if (myNumber == 0)
     {
-        std::cout << "Dividing by zero!" << std::endl;
+        return *this;
     }
     *value /= myNumber;
     return *this;
@@ -284,6 +284,10 @@ FloatType& FloatType::divide( const FloatType& ft )
 
 FloatType& FloatType::divide( const IntType& it )
 {
+    if (*it.value == 0)
+    {
+        return *this;
+    }
     *value /= *it.value;
     return *this;
 }
@@ -333,14 +337,18 @@ DoubleType& DoubleType::divide( const DoubleType& dt )
 
 DoubleType& DoubleType::divide( const IntType& it )
 {
+    if (*it.value == 0)
+    {
+        return *this;
+    }
     *value /= *it.value;
     return *this;
 }
 
 // IntType functions with inputs as references
-IntType& IntType::add( const FloatType& dt )
+IntType& IntType::add( const FloatType& ft )
 {
-    *value += *dt.value;
+    *value += *ft.value;
     return *this;
 }
 
@@ -376,12 +384,6 @@ IntType& IntType::multiply( const DoubleType& dt )
 
 IntType& IntType::divide( const DoubleType& dt )
 {
-    // if (*dt.value == 0)
-    // {
-    //     std::cout << "Cannot divide by zero!" << std::endl;
-    //     *value = 0;
-    //     return *this;
-    // } commented that on purpose
     *value /= *dt.value;
     return *this;
 }
@@ -400,8 +402,7 @@ int main()
     std::cout << "ft1: adding 2.f and subtracting 'it1' from 'ft1', then multiply by 'dt1' results in the following value: " << *ft1.add(2.f).subtract( it1 ).multiply( dt1 ).value << std::endl;
 
     DoubleType dt2(0.); // let's see what happens here
-    FloatType ft2(0.25f);
+    FloatType ft2(1.25f);
     IntType it2(10);
-    std::cout << "it1: adding -5 and dividing with 'dt2' and multiplying by 'ft2' results in the following value: " << *it2.add(-5).divide( 0. ).multiply( ft2 ).value << std::endl;  
-    std::cout << "Interesting!" << std::endl; // if I divide by int 0 I get an error
+    std::cout << "it1: adding -5 and dividing with 'dt2' and multiplying by 'ft2' results in the following value: " << *it2.add(ft2).divide( 0 ).divide( 0 ).value << std::endl;  // it returns 11 instead of 11.25 because it's IntType and returns *this
 }
