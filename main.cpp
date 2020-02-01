@@ -86,19 +86,19 @@ struct FloatType
 
     FloatType& add( float myNumber ); 
     FloatType& add( const DoubleType& dt );
-    FIXME make an 'add(const IntType&);'
+    FloatType& add( const IntType& it);
     
     FloatType& subtract( float myNumber );
     FloatType& subtract( const IntType& it );
-    FIXME see 89
+    FloatType& subtract( const DoubleType& dt );
 
     FloatType& multiply( float myNumber );
     FloatType& multiply( const DoubleType& dt );
-    FIXME see 89
+    FloatType& multiply( const IntType& it );
 
     FloatType& divide( float myNumber );
     FloatType& divide( const FloatType& dt );
-    FIXME see 89
+    FloatType& divide( const IntType& it );
 };
 
 FloatType& FloatType::add( float myNumber )
@@ -141,19 +141,19 @@ struct DoubleType
 
     DoubleType& add( double myNumber );
     DoubleType& add( const FloatType& dt );
-    FIXME see 89
+    DoubleType& add( const IntType& it );
     
     DoubleType& subtract( double myNumber );
     DoubleType& subtract( const IntType& it );
-    FIXME see 89
+    DoubleType& subtract( const FloatType& ft );
 
     DoubleType& multiply( double myNumber );
-    DoubleType& multiply( const FloatType& dt );
-    FIXME see 89
+    DoubleType& multiply( const FloatType& ft );
+    DoubleType& multiply( const IntType& it );
 
     DoubleType& divide( double myNumber );
     DoubleType& divide( const DoubleType& dt );
-    FIXME see 89
+    DoubleType& divide( const IntType& it );
 };
 
 DoubleType& DoubleType::add( double myNumber )
@@ -195,20 +195,20 @@ struct IntType
     }
 
     IntType& add( int myNumber );
-    IntType& add( const FloatType& dt );
-    FIXME see 89
+    IntType& add( const FloatType& ft );
+    IntType& add( const DoubleType& dt );
     
     IntType& subtract( int myNumber );
     IntType& subtract( const IntType& it );
-    FIXME see 89
+    IntType& subtract( const DoubleType& dt );
 
     IntType& multiply( int myNumber );
-    IntType& multiply( const FloatType& dt );
-    FIXME see 89
+    IntType& multiply( const FloatType& ft );
+    IntType& multiply( const DoubleType& dt );
 
     IntType& divide( int myNumber );
     IntType& divide( const DoubleType& dt );
-    FIXME see 89
+    IntType& divide( const FloatType& ft );
 };
 
 IntType& IntType::add( int myNumber )
@@ -233,9 +233,7 @@ IntType& IntType::divide( int myNumber )
 {
     if (myNumber == 0)
     {
-        std::cout << "Cannot divide by zero!" << std::endl;
-        *value = 0;  INFO: here is an opportunity to not modify the member, unlike the previous part.
-        return *this;
+        std::cout << "Dividing by zero!" << std::endl;
     }
     *value /= myNumber;
     return *this;
@@ -248,9 +246,21 @@ FloatType& FloatType::add( const DoubleType& dt )
     return *this;
 }
 
+FloatType& FloatType::add( const IntType& it )
+{
+    *value += *it.value;
+    return *this;
+}
+
 FloatType& FloatType::subtract( const IntType& it )
 {
     *value -= *it.value;
+    return *this;
+}
+
+FloatType& FloatType::subtract( const DoubleType& dt )
+{
+    *value -= *dt.value;
     return *this;
 }
 
@@ -260,9 +270,21 @@ FloatType& FloatType::multiply( const DoubleType& dt )
     return *this;
 }
 
-FloatType& FloatType::divide( const FloatType& dt )
+FloatType& FloatType::multiply( const IntType& it )
 {
-    *value /= *dt.value;
+    *value *= *it.value;
+    return *this;
+}
+
+FloatType& FloatType::divide( const FloatType& ft )
+{
+    *value /= *ft.value;
+    return *this;
+}
+
+FloatType& FloatType::divide( const IntType& it )
+{
+    *value /= *it.value;
     return *this;
 }
 
@@ -273,9 +295,21 @@ DoubleType& DoubleType::add( const FloatType& dt )
     return *this;
 }
 
+DoubleType& DoubleType::add( const IntType& it )
+{
+    *value += *it.value;
+    return *this;
+}
+
 DoubleType& DoubleType::subtract( const IntType& it )
 {
     *value -= *it.value;
+    return *this;
+}
+
+DoubleType& DoubleType::subtract( const FloatType& ft )
+{
+    *value -= *ft.value;
     return *this;
 }
 
@@ -285,14 +319,32 @@ DoubleType& DoubleType::multiply( const FloatType& dt )
     return *this;
 }
 
+DoubleType& DoubleType::multiply( const IntType& it )
+{
+    *value *= *it.value;
+    return *this;
+}
+
 DoubleType& DoubleType::divide( const DoubleType& dt )
 {
     *value /= *dt.value;
     return *this;
 }
 
+DoubleType& DoubleType::divide( const IntType& it )
+{
+    *value /= *it.value;
+    return *this;
+}
+
 // IntType functions with inputs as references
 IntType& IntType::add( const FloatType& dt )
+{
+    *value += *dt.value;
+    return *this;
+}
+
+IntType& IntType::add( const DoubleType& dt )
 {
     *value += *dt.value;
     return *this;
@@ -304,7 +356,19 @@ IntType& IntType::subtract( const IntType& it )
     return *this;
 }
 
-IntType& IntType::multiply( const FloatType& dt )
+IntType& IntType::subtract( const DoubleType& dt )
+{
+    *value -= *dt.value;
+    return *this;
+}
+
+IntType& IntType::multiply( const FloatType& ft )
+{
+    *value *= *ft.value;
+    return *this;
+}
+
+IntType& IntType::multiply( const DoubleType& dt )
 {
     *value *= *dt.value;
     return *this;
@@ -322,6 +386,12 @@ IntType& IntType::divide( const DoubleType& dt )
     return *this;
 }
 
+IntType& IntType::divide( const FloatType& ft )
+{
+    *value /= *ft.value;
+    return *this;
+}
+
 int main()
 {
     DoubleType dt1(5.45);
@@ -332,6 +402,6 @@ int main()
     DoubleType dt2(0.); // let's see what happens here
     FloatType ft2(0.25f);
     IntType it2(10);
-    std::cout << "it1: adding -5 and dividing with 'dt2' and multiplying by 'ft2' results in the following value: " << *it2.add(-5).divide( dt2 ).multiply( ft2 ).value << std::endl;  
-    std::cout << "Interesting!" << std::endl;
+    std::cout << "it1: adding -5 and dividing with 'dt2' and multiplying by 'ft2' results in the following value: " << *it2.add(-5).divide( 0. ).multiply( ft2 ).value << std::endl;  
+    std::cout << "Interesting!" << std::endl; // if I divide by int 0 I get an error
 }
