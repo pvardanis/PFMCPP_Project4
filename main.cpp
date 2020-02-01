@@ -84,17 +84,21 @@ struct FloatType
         value = nullptr;
     }
 
-    FloatType& add( float myNumber );
+    FloatType& add( float myNumber ); 
     FloatType& add( const DoubleType& dt );
+    FIXME make an 'add(const IntType&);'
     
     FloatType& subtract( float myNumber );
     FloatType& subtract( const IntType& it );
+    FIXME see 89
 
     FloatType& multiply( float myNumber );
     FloatType& multiply( const DoubleType& dt );
+    FIXME see 89
 
     FloatType& divide( float myNumber );
     FloatType& divide( const FloatType& dt );
+    FIXME see 89
 };
 
 FloatType& FloatType::add( float myNumber )
@@ -137,15 +141,19 @@ struct DoubleType
 
     DoubleType& add( double myNumber );
     DoubleType& add( const FloatType& dt );
+    FIXME see 89
     
     DoubleType& subtract( double myNumber );
     DoubleType& subtract( const IntType& it );
+    FIXME see 89
 
     DoubleType& multiply( double myNumber );
     DoubleType& multiply( const FloatType& dt );
+    FIXME see 89
 
     DoubleType& divide( double myNumber );
     DoubleType& divide( const DoubleType& dt );
+    FIXME see 89
 };
 
 DoubleType& DoubleType::add( double myNumber )
@@ -188,15 +196,19 @@ struct IntType
 
     IntType& add( int myNumber );
     IntType& add( const FloatType& dt );
+    FIXME see 89
     
     IntType& subtract( int myNumber );
     IntType& subtract( const IntType& it );
+    FIXME see 89
 
     IntType& multiply( int myNumber );
     IntType& multiply( const FloatType& dt );
+    FIXME see 89
 
     IntType& divide( int myNumber );
     IntType& divide( const DoubleType& dt );
+    FIXME see 89
 };
 
 IntType& IntType::add( int myNumber )
@@ -222,7 +234,7 @@ IntType& IntType::divide( int myNumber )
     if (myNumber == 0)
     {
         std::cout << "Cannot divide by zero!" << std::endl;
-        *value = 0;
+        *value = 0;  INFO: here is an opportunity to not modify the member, unlike the previous part.
         return *this;
     }
     *value /= myNumber;
