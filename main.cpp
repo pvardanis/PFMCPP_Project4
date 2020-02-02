@@ -87,18 +87,22 @@ struct FloatType
     FloatType& add( float myNumber ); 
     FloatType& add( const DoubleType& dt );
     FloatType& add( const IntType& it);
+    FIXME need 'add( const FloatType&); '
     
     FloatType& subtract( float myNumber );
     FloatType& subtract( const IntType& it );
     FloatType& subtract( const DoubleType& dt );
+    FIXME see 90
 
     FloatType& multiply( float myNumber );
     FloatType& multiply( const DoubleType& dt );
     FloatType& multiply( const IntType& it );
+    FIXME see 90
 
     FloatType& divide( float myNumber );
     FloatType& divide( const FloatType& dt );
     FloatType& divide( const IntType& it );
+    FIXME see 90
 };
 
 FloatType& FloatType::add( float myNumber )
@@ -121,7 +125,7 @@ FloatType& FloatType::multiply( float myNumber )
 
 FloatType& FloatType::divide( float myNumber )
 {
-    *value /= myNumber;
+    *value /= myNumber; FIXME warn if myNumber is 0
     return *this;
 }
 
@@ -142,18 +146,22 @@ struct DoubleType
     DoubleType& add( double myNumber );
     DoubleType& add( const FloatType& dt );
     DoubleType& add( const IntType& it );
+    FIXME see 90
     
     DoubleType& subtract( double myNumber );
     DoubleType& subtract( const IntType& it );
     DoubleType& subtract( const FloatType& ft );
+    FIXME see 90
 
     DoubleType& multiply( double myNumber );
     DoubleType& multiply( const FloatType& ft );
     DoubleType& multiply( const IntType& it );
+    FIXME see 90
 
     DoubleType& divide( double myNumber );
     DoubleType& divide( const DoubleType& dt );
     DoubleType& divide( const IntType& it );
+    FIXME see 90
 };
 
 DoubleType& DoubleType::add( double myNumber )
@@ -176,7 +184,7 @@ DoubleType& DoubleType::multiply( double myNumber )
 
 DoubleType& DoubleType::divide( double myNumber )
 {
-    *value /= myNumber;
+    *value /= myNumber; FIXME warn if myNumber is 0
     return *this;
 }
 
@@ -197,18 +205,22 @@ struct IntType
     IntType& add( int myNumber );
     IntType& add( const FloatType& ft );
     IntType& add( const DoubleType& dt );
+    FIXME see 90
     
     IntType& subtract( int myNumber );
     IntType& subtract( const IntType& it );
     IntType& subtract( const DoubleType& dt );
+    FIXME see 90
 
     IntType& multiply( int myNumber );
     IntType& multiply( const FloatType& ft );
     IntType& multiply( const DoubleType& dt );
+    FIXME see 90
 
     IntType& divide( int myNumber );
     IntType& divide( const DoubleType& dt );
     IntType& divide( const FloatType& ft );
+    FIXME see 90
 };
 
 IntType& IntType::add( int myNumber )
@@ -233,7 +245,7 @@ IntType& IntType::divide( int myNumber )
 {
     if (myNumber == 0)
     {
-        return *this;
+        return *this; FIXME add the warning back in.
     }
     *value /= myNumber;
     return *this;
@@ -286,7 +298,7 @@ FloatType& FloatType::divide( const IntType& it )
 {
     if (*it.value == 0)
     {
-        return *this;
+        return *this; FIXME floating point division by 0 is legal.  don't return, just warn.
     }
     *value /= *it.value;
     return *this;
@@ -339,7 +351,7 @@ DoubleType& DoubleType::divide( const IntType& it )
 {
     if (*it.value == 0)
     {
-        return *this;
+        return *this; FIXME floating point division by 0 is legal.  don't return, just warn.
     }
     *value /= *it.value;
     return *this;
@@ -384,13 +396,13 @@ IntType& IntType::multiply( const DoubleType& dt )
 
 IntType& IntType::divide( const DoubleType& dt )
 {
-    *value /= *dt.value;
+    *value /= *dt.value; FIXME if dt == 0 this will crash. 
     return *this;
 }
 
 IntType& IntType::divide( const FloatType& ft )
 {
-    *value /= *ft.value;
+    *value /= *ft.value; FIXME if ft == 0 this will crash. 
     return *this;
 }
 
