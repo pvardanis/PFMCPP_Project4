@@ -481,7 +481,7 @@ IntType& IntType::multiply( const DoubleType& dt )
 
 IntType& IntType::multiply( const IntType& it )
 {
-    if (*it.value == 0.)
+    if (*it.value == 0.) FIXME you're not dividing in this func...
     {
         std::cout << "Dividing int by 0!" << std::endl; 
         return *this; // else I'll get an error
