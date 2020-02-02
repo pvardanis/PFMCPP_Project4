@@ -481,11 +481,6 @@ IntType& IntType::multiply( const DoubleType& dt )
 
 IntType& IntType::multiply( const IntType& it )
 {
-    if (*it.value == 0.) FIXME you're not dividing in this func...
-    {
-        std::cout << "Dividing int by 0!" << std::endl; 
-        return *this; // else I'll get an error
-    }
     *value *= *it.value;
     return *this;
 }
@@ -509,6 +504,17 @@ IntType& IntType::divide( const FloatType& ft )
         return *this; // else I'll get an error
     }
     *value /= *ft.value;  
+    return *this;
+}
+
+IntType& IntType::divide( const IntType& it )
+{
+    if (*it.value == 0.f)
+    {
+        std::cout << "Dividing int by 0!" << std::endl;
+        return *this; // else I'll get an error
+    }
+    *value /= *it.value;  
     return *this;
 }
 
