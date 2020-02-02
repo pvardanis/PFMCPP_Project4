@@ -87,22 +87,22 @@ struct FloatType
     FloatType& add( float myNumber ); 
     FloatType& add( const DoubleType& dt );
     FloatType& add( const IntType& it);
-    FIXME need 'add( const FloatType&); '
+    FloatType& add( const FloatType& ft);
     
     FloatType& subtract( float myNumber );
     FloatType& subtract( const IntType& it );
     FloatType& subtract( const DoubleType& dt );
-    FIXME see 90
+    FloatType& subtract( const FloatType& ft);
 
     FloatType& multiply( float myNumber );
     FloatType& multiply( const DoubleType& dt );
     FloatType& multiply( const IntType& it );
-    FIXME see 90
+    FloatType& multiply( const FloatType& ft );
 
     FloatType& divide( float myNumber );
-    FloatType& divide( const FloatType& dt );
+    FloatType& divide( const FloatType& ft );
     FloatType& divide( const IntType& it );
-    FIXME see 90
+    FloatType& divide( const DoubleType& it );
 };
 
 FloatType& FloatType::add( float myNumber )
@@ -125,7 +125,11 @@ FloatType& FloatType::multiply( float myNumber )
 
 FloatType& FloatType::divide( float myNumber )
 {
-    *value /= myNumber; FIXME warn if myNumber is 0
+    if (myNumber == 0)
+    {
+        std::cout << "You're dividing by float 0!" << std::endl;
+    }
+    *value /= myNumber; 
     return *this;
 }
 
@@ -144,24 +148,24 @@ struct DoubleType
     }
 
     DoubleType& add( double myNumber );
-    DoubleType& add( const FloatType& dt );
+    DoubleType& add( const FloatType& ft );
     DoubleType& add( const IntType& it );
-    FIXME see 90
+    DoubleType& add( const DoubleType& dt );
     
     DoubleType& subtract( double myNumber );
     DoubleType& subtract( const IntType& it );
     DoubleType& subtract( const FloatType& ft );
-    FIXME see 90
+    DoubleType& subtract( const DoubleType& dt );
 
     DoubleType& multiply( double myNumber );
     DoubleType& multiply( const FloatType& ft );
     DoubleType& multiply( const IntType& it );
-    FIXME see 90
+    DoubleType& multiply( const DoubleType& dt );
 
     DoubleType& divide( double myNumber );
     DoubleType& divide( const DoubleType& dt );
     DoubleType& divide( const IntType& it );
-    FIXME see 90
+    DoubleType& divide( const FloatType& ft );
 };
 
 DoubleType& DoubleType::add( double myNumber )
@@ -184,7 +188,11 @@ DoubleType& DoubleType::multiply( double myNumber )
 
 DoubleType& DoubleType::divide( double myNumber )
 {
-    *value /= myNumber; FIXME warn if myNumber is 0
+    if (myNumber == 0.)
+    {
+        std::cout << "You're dividing by double 0!" << std::endl;
+    }
+    *value /= myNumber; 
     return *this;
 }
 
@@ -205,22 +213,22 @@ struct IntType
     IntType& add( int myNumber );
     IntType& add( const FloatType& ft );
     IntType& add( const DoubleType& dt );
-    FIXME see 90
+    IntType& add( const IntType& it );
     
     IntType& subtract( int myNumber );
     IntType& subtract( const IntType& it );
     IntType& subtract( const DoubleType& dt );
-    FIXME see 90
+    IntType& subtract( const FloatType& ft );
 
     IntType& multiply( int myNumber );
     IntType& multiply( const FloatType& ft );
     IntType& multiply( const DoubleType& dt );
-    FIXME see 90
+    IntType& multiply( const IntType& it );
 
     IntType& divide( int myNumber );
     IntType& divide( const DoubleType& dt );
     IntType& divide( const FloatType& ft );
-    FIXME see 90
+    IntType& divide( const IntType& it );
 };
 
 IntType& IntType::add( int myNumber )
@@ -245,7 +253,8 @@ IntType& IntType::divide( int myNumber )
 {
     if (myNumber == 0)
     {
-        return *this; FIXME add the warning back in.
+        std::cout << "You're dividing by 0!" << std::endl;
+        return *this; 
     }
     *value /= myNumber;
     return *this;
@@ -264,6 +273,12 @@ FloatType& FloatType::add( const IntType& it )
     return *this;
 }
 
+FloatType& FloatType::add( const FloatType& ft )
+{
+    *value += *ft.value;
+    return *this;
+}
+
 FloatType& FloatType::subtract( const IntType& it )
 {
     *value -= *it.value;
@@ -273,6 +288,12 @@ FloatType& FloatType::subtract( const IntType& it )
 FloatType& FloatType::subtract( const DoubleType& dt )
 {
     *value -= *dt.value;
+    return *this;
+}
+
+FloatType& FloatType::subtract( const FloatType& ft )
+{
+    *value -= *ft.value;
     return *this;
 }
 
@@ -288,8 +309,18 @@ FloatType& FloatType::multiply( const IntType& it )
     return *this;
 }
 
+FloatType& FloatType::multiply( const FloatType& ft )
+{
+    *value *= *ft.value;
+    return *this;
+}
+
 FloatType& FloatType::divide( const FloatType& ft )
 {
+    if (*ft.value == 0)
+    {
+        std::cout << "You're dividing by 0!" << std::endl;
+    }
     *value /= *ft.value;
     return *this;
 }
@@ -298,22 +329,38 @@ FloatType& FloatType::divide( const IntType& it )
 {
     if (*it.value == 0)
     {
-        return *this; FIXME floating point division by 0 is legal.  don't return, just warn.
+        std::cout << "You're dividing by 0!" << std::endl;
     }
     *value /= *it.value;
     return *this;
 }
 
-// DoubleType functions with inputs as references
-DoubleType& DoubleType::add( const FloatType& dt )
+FloatType& FloatType::divide( const DoubleType& dt )
 {
-    *value += *dt.value;
+    if (*dt.value == 0)
+    {
+        std::cout << "You're dividing by 0!" << std::endl;
+    }
+    *value /= *dt.value;
+    return *this;
+}
+
+// DoubleType functions with inputs as references
+DoubleType& DoubleType::add( const FloatType& ft )
+{
+    *value += *ft.value;
     return *this;
 }
 
 DoubleType& DoubleType::add( const IntType& it )
 {
     *value += *it.value;
+    return *this;
+}
+
+DoubleType& DoubleType::add( const DoubleType& dt )
+{
+    *value += *dt.value;
     return *this;
 }
 
@@ -329,6 +376,12 @@ DoubleType& DoubleType::subtract( const FloatType& ft )
     return *this;
 }
 
+DoubleType& DoubleType::subtract( const DoubleType& dt )
+{
+    *value -= *dt.value;
+    return *this;
+}
+
 DoubleType& DoubleType::multiply( const FloatType& dt )
 {
     *value *= *dt.value;
@@ -341,8 +394,18 @@ DoubleType& DoubleType::multiply( const IntType& it )
     return *this;
 }
 
+DoubleType& DoubleType::multiply( const DoubleType& dt )
+{
+    *value *= *dt.value;
+    return *this;
+}
+
 DoubleType& DoubleType::divide( const DoubleType& dt )
 {
+    if (*dt.value == 0)
+    {
+        std::cout << "You're dividing by 0!" << std::endl;
+    }
     *value /= *dt.value;
     return *this;
 }
@@ -351,9 +414,19 @@ DoubleType& DoubleType::divide( const IntType& it )
 {
     if (*it.value == 0)
     {
-        return *this; FIXME floating point division by 0 is legal.  don't return, just warn.
+        std::cout << "You're dividing by 0!" << std::endl;
     }
     *value /= *it.value;
+    return *this;
+}
+
+DoubleType& DoubleType::divide( const FloatType& ft )
+{
+    if (*ft.value == 0)
+    {
+        std::cout << "You're dividing by 0!" << std::endl;
+    }
+    *value /= *ft.value;
     return *this;
 }
 
@@ -370,6 +443,12 @@ IntType& IntType::add( const DoubleType& dt )
     return *this;
 }
 
+IntType& IntType::add( const IntType& it )
+{
+    *value += *it.value;
+    return *this;
+}
+
 IntType& IntType::subtract( const IntType& it )
 {
     *value -= *it.value;
@@ -379,6 +458,12 @@ IntType& IntType::subtract( const IntType& it )
 IntType& IntType::subtract( const DoubleType& dt )
 {
     *value -= *dt.value;
+    return *this;
+}
+
+IntType& IntType::subtract( const FloatType& ft )
+{
+    *value -= *ft.value;
     return *this;
 }
 
@@ -394,15 +479,36 @@ IntType& IntType::multiply( const DoubleType& dt )
     return *this;
 }
 
+IntType& IntType::multiply( const IntType& it )
+{
+    if (*it.value == 0.)
+    {
+        std::cout << "Dividing int by 0!" << std::endl; 
+        return *this; // else I'll get an error
+    }
+    *value *= *it.value;
+    return *this;
+}
+
 IntType& IntType::divide( const DoubleType& dt )
 {
-    *value /= *dt.value; FIXME if dt == 0 this will crash. 
+    if (*dt.value == 0.)
+    {
+        std::cout << "Dividing int by 0!" << std::endl; 
+        return *this; // else I'll get an error
+    }
+    *value /= *dt.value;  
     return *this;
 }
 
 IntType& IntType::divide( const FloatType& ft )
 {
-    *value /= *ft.value; FIXME if ft == 0 this will crash. 
+    if (*ft.value == 0.f)
+    {
+        std::cout << "Dividing int by 0!" << std::endl;
+        return *this; // else I'll get an error
+    }
+    *value /= *ft.value;  
     return *this;
 }
 
