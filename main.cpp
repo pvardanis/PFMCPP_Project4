@@ -125,7 +125,7 @@ FloatType& FloatType::multiply( float myNumber )
 
 FloatType& FloatType::divide( float myNumber )
 {
-    if (myNumber == 0) FIXME make this 0 a float
+    if (myNumber == 0.f)
     {
         std::cout << "You're dividing by float 0!" << std::endl;
     }
@@ -317,8 +317,7 @@ FloatType& FloatType::multiply( const FloatType& ft )
 
 FloatType& FloatType::divide( const FloatType& ft )
 {
-    if (*ft.value == 0) FIXME make this 0 a float
-    {
+    if (*ft.value == 0.f)     {
         std::cout << "You're dividing by 0!" << std::endl;
     }
     *value /= *ft.value;
@@ -337,7 +336,7 @@ FloatType& FloatType::divide( const IntType& it )
 
 FloatType& FloatType::divide( const DoubleType& dt )
 {
-    if (*dt.value == 0) FIXME make this 0 a double
+    if (*dt.value == 0.)
     {
         std::cout << "You're dividing by 0!" << std::endl;
     }
@@ -402,7 +401,7 @@ DoubleType& DoubleType::multiply( const DoubleType& dt )
 
 DoubleType& DoubleType::divide( const DoubleType& dt )
 {
-    if (*dt.value == 0) FIXME make this 0 a double
+    if (*dt.value == 0.)
     {
         std::cout << "You're dividing by 0!" << std::endl;
     }
@@ -422,7 +421,7 @@ DoubleType& DoubleType::divide( const IntType& it )
 
 DoubleType& DoubleType::divide( const FloatType& ft )
 {
-    if (*ft.value == 0) FIXME make this 0 a float
+    if (*ft.value == 0.f)
     {
         std::cout << "You're dividing by 0!" << std::endl;
     }
@@ -509,7 +508,7 @@ IntType& IntType::divide( const FloatType& ft )
 
 IntType& IntType::divide( const IntType& it )
 {
-    if (*it.value == 0) FIXME make this 0.f an int
+    if (*it.value == 0) // oops
     {
         std::cout << "Dividing int by 0!" << std::endl;
         return *this; // else I'll get an error
