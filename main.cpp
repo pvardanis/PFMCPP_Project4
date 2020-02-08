@@ -45,7 +45,7 @@ struct FloatType
         value = nullptr;
     }
 
-    operator float*() {return value;}
+    operator float*() {return value;} FIXME this doesn't convert to the heap-allocated type. this converts to the heap object.  also formatting
 
     FloatType& add(float myNumber);
     FloatType& subtract(float myNumber);
@@ -96,7 +96,7 @@ struct DoubleType
         value = nullptr;
     }
 
-    operator double*() {return value;}
+    operator double*() {return value;} FIXME this doesn't convert to the heap-allocated type. this converts to the heap object. also formatting
 
     DoubleType& add(double myNumber);
     DoubleType& subtract(double myNumber);
@@ -147,7 +147,7 @@ struct IntType
         value = nullptr;
     }
 
-    operator int*() {return value;}
+    operator int*() {return value;} FIXME this doesn't convert to the heap-allocated type. this converts to the heap object.  Also formatting
 
     IntType& add(int myNumber);
     IntType& subtract(int myNumber);
@@ -189,6 +189,7 @@ IntType& IntType::divide(int myNumber)
 
 int main()
 {
+    FIXME no instructions said you should change main()
     // DoubleType dt1(5.45);
     // FloatType ft1(0.1f);
     // IntType it1(3);
