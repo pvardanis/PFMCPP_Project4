@@ -192,12 +192,12 @@ int main()
     DoubleType dt1(5.45);
     FloatType ft1(0.1f);
     IntType it1(3);
-    std::cout << "ft1: adding 2.f and subtracting 'it1' from 'ft1', then multiply by 'dt1' results in the following value: " << ft1.add(2.f).subtract(it1).multiply(dt1) << std::endl;
+    std::cout << "ft1: adding 2.f and subtracting 'it1' from 'ft1', then multiply by 'dt1' results in the following value: " << ft1.add(2.f).subtract(it1).multiply(static_cast<float> (dt1)) << std::endl;
 
     DoubleType dt2(0.); // let's see what happens here
     FloatType ft2(1.25f);
     IntType it2(10);
-    std::cout << "it1: adding -5 and dividing with 'dt2' and multiplying by 'ft2' results in the following value: " << it2.add(ft2).divide(0).divide(0) << std::endl;  // it returns 11 instead of 11.25 because it's IntType and returns *this
+    std::cout << "it1: adding -5 and dividing with 'dt2' and multiplying by 'ft2' results in the following value: " << it2.add(static_cast<int> (ft2)).divide(0).divide(0) << std::endl;  // it returns 11 instead of 11.25 because it's IntType and returns *this
 
     std::cout << "good to go!" << std::endl;
     return 0;    
