@@ -56,6 +56,22 @@ Project 4: Part 4 / 9
 
 struct IntType;
 struct DoubleType;
+struct FloatType;
+
+struct Point
+{
+    Point(float, float);
+
+    Point& multiply(float);
+    Point& multiply(const IntType&);
+    Point& multiply(const FloatType&);
+    Point& multiply(const DoubleType&);
+
+    void toString();
+    
+private:
+    float x{0}, y{0};
+};
 
 struct FloatType
 {
@@ -69,8 +85,7 @@ struct FloatType
         value = nullptr;
     }
 
-    operator float() {return *value;} 
-
+    operator float() const {return *value;} 
     FloatType& add(float myNumber);
     FloatType& subtract(float myNumber);
     FloatType& multiply(float myNumber);
@@ -84,9 +99,6 @@ struct FloatType
 private:
     float* value = nullptr;
     FloatType& powInternal(float myNumber);
-    FloatType& powInternal(const IntType& myNumber);
-    FloatType& powInternal(const FloatType& myNumber);
-    FloatType& powInternal(const DoubleType& myNumber);
 };
 
 FloatType& FloatType::add(float myNumber)
@@ -129,7 +141,7 @@ struct DoubleType
         value = nullptr;
     }
 
-    operator double() {return *value;} 
+    operator double() const {return *value;} 
 
     DoubleType& add(double myNumber);
     DoubleType& subtract(double myNumber);
@@ -144,9 +156,6 @@ struct DoubleType
 private:
     double* value = nullptr;
     DoubleType& powInternal(double myNumber);
-    DoubleType& powInternal(const IntType& myNumber);
-    DoubleType& powInternal(const FloatType& myNumber);
-    DoubleType& powInternal(const DoubleType& myNumber);
 };
 
 DoubleType& DoubleType::add(double myNumber)
@@ -189,7 +198,7 @@ struct IntType
         value = nullptr;
     }
 
-    operator int() {return *value;} 
+    operator int() const {return *value;} 
 
     IntType& add(int myNumber);
     IntType& subtract(int myNumber);
@@ -204,9 +213,6 @@ struct IntType
 private:
     int* value = nullptr;
     IntType& powInternal(int myNumber);
-    IntType& powInternal(const IntType& myNumber);
-    IntType& powInternal(const FloatType& myNumber);
-    IntType& powInternal(const DoubleType& myNumber);
 };
 
 IntType& IntType::add(int myNumber)
@@ -238,40 +244,7 @@ IntType& IntType::divide(int myNumber)
     return *this;
 }
 
-/* 
-Point implementation
-*/
-struct Point
-{
-    Point(const IntType& myNumber1, const FloatType& myNumber2);
-    Point(const IntType& myNumber1, const DoubleType& myNumber2);
-    Point(const FloatType& myNumber1, const DoubleType& myNumber2);
-
-    Point& multiply(float m);
-    Point& multiply(const IntType& myNumber);
-    Point& multiply(const FloatType& myNumber);
-    Point& multiply(const DoubleType& myNumber);
-
-    void toString();
-    
-private:
-    float x{0}, y{0};
-};
-
-Point::Point(const IntType& myNumber1, const FloatType& myNumber2) : 
-x(static_cast<float>(const_cast<IntType&>(myNumber1))), 
-y(const_cast<FloatType&>(myNumber2)) 
-{ }
-
-Point::Point(const IntType& myNumber1, const DoubleType& myNumber2) : 
-x(static_cast<float>(const_cast<IntType&>(myNumber1))), 
-y(static_cast<float>(const_cast<DoubleType&>(myNumber2))) 
-{ }
-
-Point::Point(const FloatType& myNumber1, const DoubleType& myNumber2) : 
-x(const_cast<FloatType&>(myNumber1)), 
-y(static_cast<float>(const_cast<DoubleType&>(myNumber2))) 
-{ }
+Point::Point(float _x, float _y) : x(_x), y(_y) { }
 
 Point& Point::multiply(float m)
 {
@@ -282,24 +255,17 @@ Point& Point::multiply(float m)
 
 Point& Point::multiply(const IntType& myNumber)
 {
-    x *= static_cast<float>(const_cast<IntType&>(myNumber));
-    y *= static_cast<float>(const_cast<IntType&>(myNumber));
-    return *this;
+    return multiply(static_cast<float>(myNumber)); 
 }
 
 Point& Point::multiply(const FloatType& myNumber)
 {
-    x *= static_cast<float>(const_cast<FloatType&>(myNumber));
-    y *= static_cast<float>(const_cast<FloatType&>(myNumber));
-    return *this;
+    return multiply(static_cast<float>(myNumber));;
 }
 
 Point& Point::multiply(const DoubleType& myNumber)
 {
-    x *= static_cast<float>(const_cast<DoubleType&>(myNumber));
-    y *= static_cast<float>(const_cast<DoubleType&>(myNumber));
-    std::cout << x;
-    return *this;
+    return multiply(static_cast<float>(myNumber));;
 }
 
 void Point::toString()
@@ -311,15 +277,15 @@ void Point::toString()
 pow implementations
 */
 
-FloatType& FloatType::pow(float myNumber)
-{
-    return powInternal(myNumber);
-}
-
 FloatType& FloatType::powInternal(float myNumber)
 {
     *value = std::pow(*value, myNumber);
     return *this;
+}
+
+FloatType& FloatType::pow(float myNumber)
+{
+    return powInternal(myNumber);
 }
 
 FloatType& FloatType::pow(const IntType& myNumber)
@@ -327,37 +293,14 @@ FloatType& FloatType::pow(const IntType& myNumber)
     return powInternal(myNumber);
 }
 
-FloatType& FloatType::powInternal(const IntType& myNumber)
-{
-    *value = std::pow(*value, static_cast<float>(const_cast<IntType&>(myNumber)));
-    return *this; 
-}
-
 FloatType& FloatType::pow(const FloatType& myNumber)
 {
     return powInternal(myNumber);
 }
 
-FloatType& FloatType::powInternal(const FloatType& myNumber)
-{
-    *value = std::pow(*value, static_cast<float>(const_cast<FloatType&>(myNumber)));
-    return *this; 
-}
-
 FloatType& FloatType::pow(const DoubleType& myNumber)
 {
-    return powInternal(myNumber);
-}
-
-FloatType& FloatType::powInternal(const DoubleType& myNumber)
-{
-    *value = std::pow(*value, static_cast<float>(const_cast<DoubleType&>(myNumber)));
-    return *this; 
-}
-
-DoubleType& DoubleType::pow(double myNumber)
-{
-    return powInternal(myNumber);
+    return powInternal(static_cast<float>(myNumber));
 }
 
 DoubleType& DoubleType::powInternal(double myNumber)
@@ -366,26 +309,19 @@ DoubleType& DoubleType::powInternal(double myNumber)
     return *this;
 }
 
+DoubleType& DoubleType::pow(double myNumber)
+{
+    return powInternal(myNumber);
+}
+
 DoubleType& DoubleType::pow(const IntType& myNumber)
 {
     return powInternal(myNumber);
 }
 
-DoubleType& DoubleType::powInternal(const IntType& myNumber)
-{
-    *value = std::pow(*value, static_cast<double>(const_cast<IntType&>(myNumber)));
-    return *this;
-}
-
 DoubleType& DoubleType::pow(const FloatType& myNumber)
 {
-    return powInternal(myNumber);
-}
-
-DoubleType& DoubleType::powInternal(const FloatType& myNumber)
-{
-    *value = std::pow(*value, static_cast<double>(const_cast<FloatType&>(myNumber)));
-    return *this;
+    return powInternal(static_cast<double>(myNumber));
 }
 
 DoubleType& DoubleType::pow(const DoubleType& myNumber)
@@ -393,9 +329,9 @@ DoubleType& DoubleType::pow(const DoubleType& myNumber)
     return powInternal(myNumber);
 }
 
-DoubleType& DoubleType::powInternal(const DoubleType& myNumber)
+IntType& IntType::powInternal(int myNumber)
 {
-    *value = std::pow(*value, static_cast<double>(const_cast<DoubleType&>(myNumber)));
+    *value = static_cast<int>(std::pow(*value, myNumber));
     return *this;
 }
 
@@ -404,43 +340,19 @@ IntType& IntType::pow(int myNumber)
     return powInternal(myNumber);
 }
 
-IntType& IntType::powInternal(int myNumber)
-{
-    *value = std::pow(*value, myNumber);
-    return *this;
-}
-
 IntType& IntType::pow(const IntType& myNumber)
 {
     return powInternal(myNumber);
 }
 
-IntType& IntType::powInternal(const IntType& myNumber)
-{
-    *value = std::pow(*value, static_cast<int>(const_cast<IntType&>(myNumber)));
-    return *this;
-}
-
 IntType& IntType::pow(const FloatType& myNumber)
 {
-    return powInternal(myNumber);
-}
-
-IntType& IntType::powInternal(const FloatType& myNumber)
-{
-    *value = std::pow(*value, static_cast<int>(const_cast<FloatType&>(myNumber)));
-    return *this;
+    return powInternal(static_cast<int>(myNumber));
 }
 
 IntType& IntType::pow(const DoubleType& myNumber)
 {
-    return powInternal(myNumber);
-}
-
-IntType& IntType::powInternal(const DoubleType& myNumber)
-{
-    *value = std::pow(*value, static_cast<int>(const_cast<DoubleType&>(myNumber)));
-    return *this;
+    return powInternal(static_cast<int>(myNumber));
 }
 
 int main()
@@ -448,17 +360,17 @@ int main()
     // test pow
     IntType it1(4);
     FloatType ft1(2.25f);
-    FloatType dt1(5.4);
+    DoubleType dt1(5.4);
 
     IntType it2(2);
     FloatType ft2(5.5f);
-    FloatType dt2(1.25);
+    DoubleType dt2(1.25);
 
     IntType it3(3);
     FloatType ft3(1.15f);
-    FloatType dt3(3.25); 
+    DoubleType dt3(3.25); 
 
-    // I put small numbers to prevent overflow
+    // // I put small numbers to prevent overflow
 
     std::cout << "Test IntType: " << std::endl;
     std::cout << "4 ^ 2.25f ^ 5.4  = " << it1.pow(ft1).pow(dt1) << std::endl; 
@@ -482,14 +394,14 @@ int main()
     std::cout << "\np1 values after multiplication with 2.25: " << std::endl;
     p1.toString();
 
-    Point p2(itp, dtp);
+    Point p2(itp, static_cast<float>(dtp));
     std::cout << "\np2 values: " << std::endl;
     p2.toString();
     p2.multiply(ftp); 
     std::cout << "\np2 values after multiplication with 5.25f: " << std::endl;
     p2.toString();
 
-    Point p3(ftp, dtp);
+    Point p3(ftp, static_cast<float>(dtp));
     std::cout << "\np3 values: " << std::endl;
     p3.toString();
     p3.multiply(itp); 
