@@ -255,7 +255,7 @@ Point& Point::multiply(float m)
 
 Point& Point::multiply(const IntType& myNumber)
 {
-    return multiply(static_cast<float>(myNumber)); 
+    return multiply(static_cast<float>(myNumber)); // this needs to be here? 
 }
 
 Point& Point::multiply(const FloatType& myNumber)
