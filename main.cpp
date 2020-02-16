@@ -101,12 +101,6 @@ struct FloatType
 
     operator float() const {return *value;} 
     
-    FloatType& operator=(const FloatType& other)
-    {
-        *value = *other.value;
-        return *this;
-    }
-
     FloatType& operator+=(float myNumber);
     FloatType& operator-=(float myNumber);
     FloatType& operator*=(float myNumber);
@@ -156,12 +150,6 @@ struct DoubleType
     {
         delete value;
         value = nullptr;
-    }
-
-    DoubleType& operator=(const DoubleType& other)
-    {
-        *value = *other.value;
-        return *this;
     }
 
     operator double() const {return *value;} 
@@ -215,12 +203,6 @@ struct IntType
     {
         delete value;
         value = nullptr;
-    }
-
-    IntType& operator=(const IntType& other)
-    {
-        *value = *other.value;
-        return *this;
     }
 
     operator int() const {return *value;} 
