@@ -25,34 +25,7 @@ Project 4: Part 5 / 9
          add some in and fix the build errors that might result via the techniques you have learned in the previous weeks (hint: casting)
          i.e.
  */
-#if false
-namespace Example
-{
-    int main()
-    {
-        FloatType floatNum(4.3f);
-        IntType intNum(2);
-        IntType intNum2(6);
 
-        /* 
-        if you previously had a line like this demonstrating chaining:
-            
-            intNum.add(3).add(4.5f).divide(floatNum); 
-
-        it should become:
-        */
-        intNum += 3;
-        intNum += 4.5f;
-        intNum /= floatNum;
-        std::cout << "intNum: " << intNum << std::endl;
-
-        intNum = 2 + (intNum2 - 4) + floatNum / 2.3;
-        std::cout << "intNum: " << intNum << std::endl;
-        
-        return 0;
-    }
-}
-#endif
  /*
  6) compile/link/run to make sure you don't have any errors
  
@@ -98,11 +71,18 @@ struct FloatType
     }
 
     operator float() const {return *value;} 
-    FloatType& add(float myNumber);
-    FloatType& subtract(float myNumber);
-    FloatType& multiply(float myNumber);
-    FloatType& divide(float myNumber);
+    
+    FloatType& operator=(const FloatType& other)
+    {
+        *value = *other.value;
+        return *this;
+    }
 
+    FloatType& operator+=(float myNumber);
+    FloatType& operator-=(float myNumber);
+    FloatType& operator*=(float myNumber);
+    FloatType& operator/=(float myNumber);
+    
     FloatType& pow(float myNumber);
     FloatType& pow(const IntType& myNumber);
     FloatType& pow(const FloatType& myNumber);
@@ -113,31 +93,27 @@ private:
     FloatType& powInternal(float myNumber);
 };
 
-FloatType& FloatType::add(float myNumber)
+FloatType& FloatType::operator+=(float myNumber)
 {
     *value += myNumber;
     return *this;
 }
 
-FloatType& FloatType::subtract(float myNumber)
+FloatType& FloatType::operator-=(float myNumber)
 {
     *value -= myNumber;
     return *this;
 }
 
-FloatType& FloatType::multiply(float myNumber)
+FloatType& FloatType::operator*=(float myNumber)
 {
-    *value *= myNumber;
+    *value /= myNumber;
     return *this;
 }
 
-FloatType& FloatType::divide(float myNumber)
+FloatType& FloatType::operator/=(float myNumber)
 {
-    if (myNumber == 0.f)
-    {
-        std::cout << "You're dividing by float 0!" << std::endl;
-    }
-    *value /= myNumber; 
+    *value /= myNumber;
     return *this;
 }
 
@@ -153,12 +129,18 @@ struct DoubleType
         value = nullptr;
     }
 
+    DoubleType& operator=(const DoubleType& other)
+    {
+        *value = *other.value;
+        return *this;
+    }
+
     operator double() const {return *value;} 
 
-    DoubleType& add(double myNumber);
-    DoubleType& subtract(double myNumber);
-    DoubleType& multiply(double myNumber);
-    DoubleType& divide(double myNumber);
+    DoubleType& operator+=(double myNumber);
+    DoubleType& operator-=(double myNumber);
+    DoubleType& operator*=(double myNumber);
+    DoubleType& operator/=(double myNumber);
 
     DoubleType& pow(double myNumber);
     DoubleType& pow(const IntType& myNumber);
@@ -170,31 +152,27 @@ private:
     DoubleType& powInternal(double myNumber);
 };
 
-DoubleType& DoubleType::add(double myNumber)
+DoubleType& DoubleType::operator+=(double myNumber)
 {
     *value += myNumber;
     return *this;
 }
 
-DoubleType& DoubleType::subtract(double myNumber)
+DoubleType& DoubleType::operator-=(double myNumber)
 {
     *value -= myNumber;
     return *this;
 }
 
-DoubleType& DoubleType::multiply(double myNumber)
+DoubleType& DoubleType::operator*=(double myNumber)
 {
-    *value *= myNumber;
+    *value /= myNumber;
     return *this;
 }
 
-DoubleType& DoubleType::divide(double myNumber)
+DoubleType& DoubleType::operator/=(double myNumber)
 {
-    if (myNumber == 0.)
-    {
-        std::cout << "You're dividing by double 0!" << std::endl;
-    }
-    *value /= myNumber; 
+    *value /= myNumber;
     return *this;
 }
 
@@ -210,12 +188,18 @@ struct IntType
         value = nullptr;
     }
 
+    IntType& operator=(const IntType& other)
+    {
+        *value = *other.value;
+        return *this;
+    }
+
     operator int() const {return *value;} 
 
-    IntType& add(int myNumber);
-    IntType& subtract(int myNumber);
-    IntType& multiply(int myNumber);
-    IntType& divide(int myNumber);
+    IntType& operator+=(int myNumber);
+    IntType& operator-=(int myNumber);
+    IntType& operator*=(int myNumber);
+    IntType& operator/=(int myNumber);
 
     IntType& pow(int myNumber);
     IntType& pow(const IntType& myNumber);
@@ -227,31 +211,26 @@ private:
     IntType& powInternal(int myNumber);
 };
 
-IntType& IntType::add(int myNumber)
+IntType& IntType::operator+=(int myNumber)
 {
     *value += myNumber;
     return *this;
 }
 
-IntType& IntType::subtract(int myNumber)
+IntType& IntType::operator-=(int myNumber)
 {
     *value -= myNumber;
     return *this;
 }
 
-IntType& IntType::multiply(int myNumber)
+IntType& IntType::operator*=(int myNumber)
 {
-    *value *= myNumber;
+    *value /= myNumber;
     return *this;
 }
 
-IntType& IntType::divide(int myNumber)
+IntType& IntType::operator/=(int myNumber)
 {
-    if (myNumber == 0)
-    {
-        std::cout << "You're dividing by 0!" << std::endl;
-        return *this; 
-    }
     *value /= myNumber;
     return *this;
 }
@@ -366,6 +345,35 @@ IntType& IntType::pow(const DoubleType& myNumber)
 {
     return powInternal(static_cast<int>(myNumber));
 }
+
+#if true
+
+namespace Example
+{
+    int main()
+    {
+        FloatType floatNum(4.3f);
+        IntType intNum(2);
+        IntType intNum2(6);
+
+        /* 
+        if you previously had a line like this demonstrating chaining:
+            
+            intNum.add(3).add(4.5f).divide(floatNum); 
+        it should become:
+        */
+        intNum += 3;
+        intNum += 4.5f;
+        intNum /= floatNum;
+        std::cout << "intNum: " << intNum << std::endl;
+
+        intNum = 2 + (intNum2 - 4) + floatNum / 2.3;
+        std::cout << "intNum: " << intNum << std::endl;
+        
+        return 0;
+    }
+}
+#endif
 
 int main()
 {
