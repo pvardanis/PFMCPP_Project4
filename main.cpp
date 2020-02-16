@@ -40,8 +40,37 @@ Project 4: Part 5 / 9
 #include <cmath>
 
 struct IntType;
-struct DoubleType;
 struct FloatType;
+struct DoubleType;
+
+#if false
+
+namespace Example
+{
+    int main()
+    {
+        FloatType floatNum(4.3f);
+        IntType intNum(2);
+        IntType intNum2(6);
+
+        /* 
+        if you previously had a line like this demonstrating chaining:
+            
+            intNum.add(3).add(4.5f).divide(floatNum); 
+        it should become:
+        */
+        intNum += 3;
+        intNum += 4.5f;
+        intNum /= floatNum;
+        std::cout << "intNum: " << intNum << std::endl;
+
+        intNum = 2 + (intNum2 - 4) + floatNum / 2.3;
+        std::cout << "intNum: " << intNum << std::endl;
+        
+        return 0;
+    }
+}
+#endif
 
 struct Point
 {
@@ -346,38 +375,8 @@ IntType& IntType::pow(const DoubleType& myNumber)
     return powInternal(static_cast<int>(myNumber));
 }
 
-#if true
-
-namespace Example
-{
-    int main()
-    {
-        FloatType floatNum(4.3f);
-        IntType intNum(2);
-        IntType intNum2(6);
-
-        /* 
-        if you previously had a line like this demonstrating chaining:
-            
-            intNum.add(3).add(4.5f).divide(floatNum); 
-        it should become:
-        */
-        intNum += 3;
-        intNum += 4.5f;
-        intNum /= floatNum;
-        std::cout << "intNum: " << intNum << std::endl;
-
-        intNum = 2 + (intNum2 - 4) + floatNum / 2.3;
-        std::cout << "intNum: " << intNum << std::endl;
-        
-        return 0;
-    }
-}
-#endif
-
 int main()
 {
-    Example::main();
     // test pow
     IntType it1(4);
     FloatType ft1(2.25f);
