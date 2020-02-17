@@ -130,7 +130,7 @@ FloatType& FloatType::operator-=(float myNumber)
 
 FloatType& FloatType::operator*=(float myNumber)
 {
-    *value /= myNumber;
+    *value *= myNumber;
     return *this;
 }
 
@@ -187,7 +187,7 @@ DoubleType& DoubleType::operator-=(double myNumber)
 
 DoubleType& DoubleType::operator*=(double myNumber)
 {
-    *value /= myNumber;
+    *value *= myNumber;
     return *this;
 }
 
@@ -244,7 +244,7 @@ IntType& IntType::operator-=(int myNumber)
 
 IntType& IntType::operator*=(int myNumber)
 {
-    *value /= myNumber;
+    *value *= myNumber;
     return *this;
 }
 
