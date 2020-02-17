@@ -49,9 +49,10 @@ send me a DM to check your pull request
  */
 
 //example:
-namespace Example {
+
 #include <functional>
 #include <memory>
+namespace Example {
 //====================================================
 /*
 note: this example omits the math operators.
@@ -424,6 +425,7 @@ IntType& IntType::pow(const DoubleType& myNumber)
 
 int main()
 {
+    Example::main();
     // test pow
     IntType it1(4);
     FloatType ft1(2.25f);
