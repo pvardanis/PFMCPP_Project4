@@ -136,6 +136,10 @@ FloatType& FloatType::operator*=(float myNumber)
 
 FloatType& FloatType::operator/=(float myNumber)
 {
+    if (myNumber == 0.f)
+    {
+        std::cout << "You're dividing by float 0!" << std::endl;
+    }
     *value /= myNumber;
     return *this;
 }
@@ -189,6 +193,10 @@ DoubleType& DoubleType::operator*=(double myNumber)
 
 DoubleType& DoubleType::operator/=(double myNumber)
 {
+    if (myNumber == 0.)
+    {
+        std::cout << "You're dividing by double 0!" << std::endl;
+    }
     *value /= myNumber;
     return *this;
 }
@@ -242,6 +250,11 @@ IntType& IntType::operator*=(int myNumber)
 
 IntType& IntType::operator/=(int myNumber)
 {
+     if (myNumber == 0)
+    {
+        std::cout << "You're dividing by 0!" << std::endl;
+        return *this; 
+    }
     *value /= myNumber;
     return *this;
 }
