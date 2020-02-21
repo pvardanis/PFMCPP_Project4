@@ -56,11 +56,7 @@ namespace Example {
 //====================================================
 
 
-// 1) auto lambda = [= or &](int multiplier) mutable(only if =) -> int
-// std::function<void()> func = [](){} as an input
-// int(*func)(bool, int) dont do that, pass lambda instead
-
-
+// 1) 
 /*
 note: this example omits the math operators.
 your task should still include them.
