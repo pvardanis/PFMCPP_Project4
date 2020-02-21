@@ -1,125 +1,67 @@
 
 #include <iostream>
 /*
-Project 4 - Part 6 / 9
-Video: Chapter 5 Part 3
- 
-Create a branch named Part6
- 
- Lambdas
- 
-    Do not delete your previous main. you will be adding to it.
+Project 4: Part 7 / 9
+Video: Chapter 5 Part 4
+
+Create a branch named Part7
+
+Templates and Containers
 
     Build/Run often with this task to make sure you're not breaking the code with each step.
     I recommend committing after you get each step working so you can revert to a working version easily if needed.
- 
- 1) add two member functions named "apply()" to your Heap-Allocated Numeric Type wrapper.
-         both apply() functions should work with chaining
- 
- 2) One of the apply() functions should takes a std::function<> object as the function argument that returns *this;
- 
- 3) the other apply() function should take a function pointer that returns void.
- 
- 4) Make both of the member functions's Callable Function Parameter use your owned object as it's single parameter.
-         e.g. if you manage your owned object via std::unique_ptr<T>, you'd use this for your std::function argument:
-             std::function< OwnedT&(std::unique_ptr<T>&)>
-             
-         if you managed your owned object via a raw pointer, you'd use this for your std::function argument:
-             std::function<OwnedT&(T&)>    
- 
- 5) call that Callable Function Parameter in the apply() member function.
-         be sure to practice safe std::function usage (make sure it's not a nullptr function being called)
- 
- 6) Call your member function twice:
-         a) once with a lambda as the argument
-         b) once with a free function as the argument.
-         If this confuses you, rewatch the video where I pass a free function in to a function that wants a function pointer
- 
- 8) Make your lambda/free function update the value of your held object
- 
- 9) use std::cout statements to print out the results of calling apply()
- 
-build/run to make sure you don't have any errors
+    it's very easy to mess this task up. 
 
+#1) if you're not using std::unique_ptr to own your heap-allocated type as a member variable, 
+    replace your manual memory management techniques with a private std::unique_ptr member variable.
+
+#2) replace your Heap-Allocated Numeric Type-owning class with a templated class called Numeric.
+        replace all of your previous instances of your separate classes with this templated class.
+
+#3) add a 'using <some name> = <your class template parameter>;' 
+        treat this type declaration via 'using' as a static member variable
+        use this Type alias as the argument everywhere you previously used the template argument.
+        this will make it very easy to change the type if needed.
+            i.e. if you have 'std::unique_ptr<NumericType> value;' before
+                you'd replace NumericType in that variable declaration with '<some name>'
+        
+#4) you'll need to pair it with decltype() to help the compiler figure out the type of the object 
+    your class owns when you make your lambda and free function that takes your unique_ptr.  
+    i.e. like this for determining the template parameter of the unique_ptr function argument to your class's apply() function
+        std::unique_ptr< decltype( <instance of class> )::<some name> >
+    
+#5) template your free function for the apply() that takes a function pointer so it can be used with your Wrapper class's apply() function
+
+#6) add an explicit template specialization for 'double' of your wrapper class
+        this template specialization will have one apply() function instead of 2. 
+
+#7) this apply() function will be templated, and expect a Callable object, not std::function<>.   //need to see if I can do this.
+        the function should allow for chaining.  
+        the callable object should return void, like the function pointer-based apply() function in the primary class template
+
+#8) instantiate your explicit template specialization
+
+#9) call the apply function twice, once with a lambda and once with the free function
+        the free function is templated, so you might need to call it including the template arguments.
+        
+#10) in addition to using the lambda argument to modify the owned object:  (your previous task's lambdas did this same thing) 
+        make the lambda use your explicit template instance (maybe via a std::cout), 
+
+
+
+compile/link/run to make sure you don't have any errors
+
+Commit your changes by clicking on the Source Control panel on the left, entering a message, and click [Commit and push].
+ 
 Make a pull request after you make your first commit and pin the pull request link to our DM thread.
 
 send me a DM to check your pull request
 
  Wait for my code review.
- */
 
-//example:
-
-#include <functional>
-#include <memory>
-namespace Example {
-//====================================================
-
-
-// 1) 
-/*
-note: this example omits the math operators.
-your task should still include them.
+If you need to view an example, see: https://bitbucket.org/MatkatMusic/pfmcpptasks/src/master/Projects/Project4/Part7Example.cpp
 */
-struct Int
-{
-    // Int(int v) : ui( new int(v) ) { }        //old style of member init with explicit 'new'
-    Int(int v) : ui( std::make_unique<int>(v) ) {} //new style of member init with make_unique instead
-    
-    Int& apply( std::function<Int&(std::unique_ptr<int>&)> f)   // 1), 2), 4)
-    {
-        std::cout << "std::function<>" << std::endl;
 
-        if( f )
-        {
-            return f(ui);  // 5)
-        }
-        
-        return *this; // 1)
-    }
-    
-    Int& apply( void(*f)(std::unique_ptr<int>&) ) // 1), 3), 4) 
-    {
-        std::cout << "free function" << std::endl;
-
-        if( f )
-            f(ui); // 5)
-        
-        return *this; // 1)
-    }
-    
-    operator int() { return *ui; }
-private:
-    std::unique_ptr<int> ui;
-};
-//====================================================
-void cube( std::unique_ptr<int>& ui )
-{
-    int& i = *ui;
-    i = i * i * i; // 7)
-}
-//====================================================
-int main()
-{
-    Int i(3);
-    
-    std::cout << "Int: " << i << std::endl;
-    
-    i.apply( [&](std::unique_ptr<int>& ui) -> Int& // 6a)
-            {
-                *ui = *ui * *ui; // 7)
-                return i;
-            });
-    
-    std::cout << "square Int (lambda): " << i << std::endl;  // 8)
-    
-    i.apply( cube ); // 6b)
-    
-    std::cout << "cube Int: " << i << std::endl; // 9)
-    
-    return 0;
-}
-} //end namespace Example
 
 #include <iostream>
 #include <cmath>
