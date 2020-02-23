@@ -1,5 +1,3 @@
-
-#include <iostream>
 /*
 Project 4: Part 7 / 9
 Video: Chapter 5 Part 4
@@ -62,429 +60,92 @@ send me a DM to check your pull request
 If you need to view an example, see: https://bitbucket.org/MatkatMusic/pfmcpptasks/src/master/Projects/Project4/Part7Example.cpp
 */
 
-
 #include <iostream>
 #include <cmath>
+#include <functional>
+#include <memory>
 
-struct IntType;
-struct FloatType;
-struct DoubleType;
+template<typename numType>
 
-struct Point
+// solution
+struct Numeric
 {
-    Point(float, float);
+    using myType = numType;
 
-    Point& multiply(float);
-    Point& multiply(const IntType&);
-    Point& multiply(const FloatType&);
-    Point& multiply(const DoubleType&);
-
-    void toString();
+    Numeric(myType number_) : value(std::make_unique<myType>(number_)) {} 
     
+    Numeric& apply(std::function<Numeric&(std::unique_ptr<myType>&)> f)  
+    {
+        std::cout << "std::function<>" << std::endl;
+
+        if(f)
+        {
+            return f(value);  // 5)
+        }
+        
+        return *this; // 1)
+    }
+    
+    Numeric& apply(void(*f)(std::unique_ptr<myType>&)) // 1), 3), 4) 
+    {
+        std::cout << "free function" << std::endl;
+
+        if(f)
+            f(value); // 5)
+        
+        return *this; // 1)
+    }
+
+    operator myType() const {return *value;} 
+
 private:
-    float x{0}, y{0};
+    std::unique_ptr<myType> value;
 };
 
-// freeFunc
+// double
+template<>
 
-void updateValueFloat(std::unique_ptr<float>& value)
+struct Numeric<double>
 {
-    *value += 5.f;
-}
+    using myType = double;
 
-void updateValueDouble(std::unique_ptr<double>& value)
-{
-    *value += 5.;
-}
+    Numeric(myType number_) : value(std::make_unique<myType>(number_)) {} 
+    
+    template<typename Callable>
 
-void updateValueInt(std::unique_ptr<int>& value)
+    Numeric& apply(Callable c)  
+    {
+        std::cout << "Callable function" << std::endl;
+        
+        c(value); 
+        
+        return *this; 
+    }
+
+    operator myType() const {return *value;} 
+        
+private:
+    std::unique_ptr<myType> value;
+};
+
+// templated free function
+template<typename numType>
+
+void updateValue(std::unique_ptr<numType>& value)
 {
     *value += 5;
 }
 
-struct FloatType
-{
-    FloatType(float number_) : value(std::make_unique<float>(number_)) {} 
-    
-    FloatType& apply(std::function<FloatType&(std::unique_ptr<float>&)> f)   // 1), 2), 4)
-    {
-        std::cout << "std::function<>" << std::endl;
-
-        if(f)
-        {
-            return f(value);  // 5)
-        }
-        
-        return *this; // 1)
-    }
-    
-    FloatType& apply(void(*f)(std::unique_ptr<float>&)) // 1), 3), 4) 
-    {
-        std::cout << "free function" << std::endl;
-
-        if(f)
-            f(value); // 5)
-        
-        return *this; // 1)
-    }
-
-    operator float() const {return *value;} 
-    
-    FloatType& operator+=(float myNumber);
-    FloatType& operator-=(float myNumber);
-    FloatType& operator*=(float myNumber);
-    FloatType& operator/=(float myNumber);
-    
-    FloatType& pow(float myNumber);
-    FloatType& pow(const IntType& myNumber);
-    FloatType& pow(const FloatType& myNumber);
-    FloatType& pow(const DoubleType& myNumber);
-
-private:
-    std::unique_ptr<float> value;
-    FloatType& powInternal(float myNumber);
-};
-
-FloatType& FloatType::operator+=(float myNumber)
-{
-    *value += myNumber;
-    return *this;
-}
-
-FloatType& FloatType::operator-=(float myNumber)
-{
-    *value -= myNumber;
-    return *this;
-}
-
-FloatType& FloatType::operator*=(float myNumber)
-{
-    *value *= myNumber;
-    return *this;
-}
-
-FloatType& FloatType::operator/=(float myNumber)
-{
-    if (myNumber == 0.f)
-    {
-        std::cout << "You're dividing by float 0!" << std::endl;
-    }
-    *value /= myNumber;
-    return *this;
-}
-
-struct DoubleType
-{
-    DoubleType(double number_) : value(std::make_unique<double>(number_)) {} 
-    
-    DoubleType& apply(std::function<DoubleType&(std::unique_ptr<double>&)> f)   // 1), 2), 4)
-    {
-        std::cout << "std::function<>" << std::endl;
-
-        if(f)
-        {
-            return f(value);  // 5)
-        }
-        
-        return *this; // 1)
-    }
-    
-    DoubleType& apply(void(*f)(std::unique_ptr<double>&)) // 1), 3), 4) 
-    {
-        std::cout << "free function" << std::endl;
-
-        if(f)
-            f(value); // 5)
-        
-        return *this; // 1)
-    }
-
-    operator double() const {return *value;} 
-
-    DoubleType& operator+=(double myNumber);
-    DoubleType& operator-=(double myNumber);
-    DoubleType& operator*=(double myNumber);
-    DoubleType& operator/=(double myNumber);
-
-    DoubleType& pow(double myNumber);
-    DoubleType& pow(const IntType& myNumber);
-    DoubleType& pow(const FloatType& myNumber);
-    DoubleType& pow(const DoubleType& myNumber);
-
-private:
-    std::unique_ptr<double> value;
-    DoubleType& powInternal(double myNumber);
-};
-
-DoubleType& DoubleType::operator+=(double myNumber)
-{
-    *value += myNumber;
-    return *this;
-}
-
-DoubleType& DoubleType::operator-=(double myNumber)
-{
-    *value -= myNumber;
-    return *this;
-}
-
-DoubleType& DoubleType::operator*=(double myNumber)
-{
-    *value *= myNumber;
-    return *this;
-}
-
-DoubleType& DoubleType::operator/=(double myNumber)
-{
-    if (myNumber == 0.)
-    {
-        std::cout << "You're dividing by double 0!" << std::endl;
-    }
-    *value /= myNumber;
-    return *this;
-}
-
-struct IntType
-{
-    IntType(int number_) : value(std::make_unique<int>(number_)) {} 
-    
-    IntType& apply(std::function<IntType&(std::unique_ptr<int>&)> f)   // 1), 2), 4)
-    {
-        std::cout << "std::function<>" << std::endl;
-
-        if(f)
-        {
-            return f(value);  // 5)
-        }
-        
-        return *this; // 1)
-    }
-    
-    IntType& apply(void(*f)(std::unique_ptr<int>&)) // 1), 3), 4) 
-    {
-        std::cout << "free function" << std::endl;
-
-        if(f)
-            f(value); // 5)
-        
-        return *this; // 1)
-    }
-
-    operator int() const {return *value;} 
-
-    IntType& operator+=(int myNumber);
-    IntType& operator-=(int myNumber);
-    IntType& operator*=(int myNumber);
-    IntType& operator/=(int myNumber);
-
-    IntType& pow(int myNumber);
-    IntType& pow(const IntType& myNumber);
-    IntType& pow(const FloatType& myNumber);
-    IntType& pow(const DoubleType& myNumber);
-
-private:
-    std::unique_ptr<int> value;
-    IntType& powInternal(int myNumber);
-};
-
-IntType& IntType::operator+=(int myNumber)
-{
-    *value += myNumber;
-    return *this;
-}
-
-IntType& IntType::operator-=(int myNumber)
-{
-    *value -= myNumber;
-    return *this;
-}
-
-IntType& IntType::operator*=(int myNumber)
-{
-    *value *= myNumber;
-    return *this;
-}
-
-IntType& IntType::operator/=(int myNumber)
-{
-     if (myNumber == 0)
-    {
-        std::cout << "You're dividing by 0!" << std::endl;
-        return *this; 
-    }
-    *value /= myNumber;
-    return *this;
-}
-
-Point::Point(float _x, float _y) : x(_x), y(_y) { }
-
-Point& Point::multiply(float m)
-{
-    x *= m;
-    y *= m;
-    return *this;
-}
-
-Point& Point::multiply(const IntType& myNumber)
-{
-    return multiply(static_cast<float>(myNumber)); // this needs to be here? 
-}
-
-Point& Point::multiply(const FloatType& myNumber)
-{
-    return multiply(static_cast<float>(myNumber));;
-}
-
-Point& Point::multiply(const DoubleType& myNumber)
-{
-    return multiply(static_cast<float>(myNumber));;
-}
-
-void Point::toString()
-{
-    std::cout << "x: " << x << ", y: " << y << std::endl;
-}
-
-/*
-pow implementations
-*/
-
-FloatType& FloatType::powInternal(float myNumber)
-{
-    *value = std::pow(*value, myNumber);
-    return *this;
-}
-
-FloatType& FloatType::pow(float myNumber)
-{
-    return powInternal(myNumber);
-}
-
-FloatType& FloatType::pow(const IntType& myNumber)
-{
-    return powInternal(myNumber);
-}
-
-FloatType& FloatType::pow(const FloatType& myNumber)
-{
-    return powInternal(myNumber);
-}
-
-FloatType& FloatType::pow(const DoubleType& myNumber)
-{
-    return powInternal(static_cast<float>(myNumber));
-}
-
-DoubleType& DoubleType::powInternal(double myNumber)
-{
-    *value = std::pow(*value, myNumber);
-    return *this;
-}
-
-DoubleType& DoubleType::pow(double myNumber)
-{
-    return powInternal(myNumber);
-}
-
-DoubleType& DoubleType::pow(const IntType& myNumber)
-{
-    return powInternal(myNumber);
-}
-
-DoubleType& DoubleType::pow(const FloatType& myNumber)
-{
-    return powInternal(static_cast<double>(myNumber));
-}
-
-DoubleType& DoubleType::pow(const DoubleType& myNumber)
-{
-    return powInternal(myNumber);
-}
-
-IntType& IntType::powInternal(int myNumber)
-{
-    *value = static_cast<int>(std::pow(*value, myNumber));
-    return *this;
-}
-
-IntType& IntType::pow(int myNumber)
-{
-    return powInternal(myNumber);
-}
-
-IntType& IntType::pow(const IntType& myNumber)
-{
-    return powInternal(myNumber);
-}
-
-IntType& IntType::pow(const FloatType& myNumber)
-{
-    return powInternal(static_cast<int>(myNumber));
-}
-
-IntType& IntType::pow(const DoubleType& myNumber)
-{
-    return powInternal(static_cast<int>(myNumber));
-}
-
 int main()
 {
-    Example::main();
-    // test pow
-    IntType it1(4);
-    FloatType ft1(2.25f);
-    DoubleType dt1(5.4);
-
-    IntType it2(2);
-    FloatType ft2(5.5f);
-    DoubleType dt2(1.25);
-
-    IntType it3(3);
-    FloatType ft3(1.15f);
-    DoubleType dt3(3.25); 
-
-    // // I put small numbers to prevent overflow
-
-    std::cout << "Test IntType: " << std::endl;
-    std::cout << "4 ^ 2.25f ^ 5.4  = " << it1.pow(ft1).pow(dt1) << std::endl; 
-
-    std::cout << "\nTest FloatType: " << std::endl;
-    std::cout << "5.5f ^ 2 ^ 1.25  = " << ft2.pow(it2).pow(dt2) << std::endl;
-
-    std::cout << "\nTest DoubleType: " << std::endl;
-    std::cout << "3.25 ^ 1.15f ^ 3  = " << dt3.pow(ft3).pow(it3) << std::endl;
-    std::cout << "\n" << std::endl;
-
-    // test Point
-    IntType itp(4);
-    FloatType ftp(5.25f);
-    DoubleType dtp(2.25);
-
-    Point p1(itp, ftp);
-    std::cout << "p1 values: " << std::endl;
-    p1.toString();
-    p1.multiply(dtp); 
-    std::cout << "\np1 values after multiplication with 2.25: " << std::endl;
-    p1.toString();
-
-    Point p2(itp, static_cast<float>(dtp));
-    std::cout << "\np2 values: " << std::endl;
-    p2.toString();
-    p2.multiply(ftp); 
-    std::cout << "\np2 values after multiplication with 5.25f: " << std::endl;
-    p2.toString();
-
-    Point p3(ftp, static_cast<float>(dtp));
-    std::cout << "\np3 values: " << std::endl;
-    p3.toString();
-    p3.multiply(itp); 
-    std::cout << "\np3 values after multiplication with 4: " << std::endl;
-    p3.toString();
-    FloatType ft(2.5f);
+    std::cout << "********************" << std::endl;   
+    Numeric<float> ft(2.5f);
     
+    using NumericFt = decltype(ft)::myType;
+
     std::cout << "FloatType: " << ft << std::endl;
     
-    ft.apply([&](std::unique_ptr<float>& value) -> FloatType&
+    ft.apply([&](std::unique_ptr<NumericFt>& value) -> decltype(ft)&
             {
                 *value *= 2;
                 return ft;
@@ -492,29 +153,33 @@ int main()
     
     std::cout << "Multiply by 2 FloatType (lambda): " << ft << std::endl;
 
-    ft.apply(updateValueFloat);
-    std::cout << "updateValueFloat (adds 5): " << ft << std::endl;
+    ft.apply(updateValue);
+    std::cout << "updateValue (adds 5): " << ft << std::endl;
 
-    DoubleType dt(5.75);
+    Numeric<double> dt(5.75);
     
+    std::cout << "********************" << std::endl;
+
     std::cout << "DoubleType: " << dt << std::endl;
     
-    dt.apply([&](std::unique_ptr<double>& value) -> DoubleType&
+    dt.apply([&](std::unique_ptr<double>& value) 
             {
-                *value /= 2;
-                return dt;
+                *value *= 2;
+                std::cout << "Multiply by 2 DoubleType (lambda): " << *value << std::endl;
             });
-    
-    std::cout << "Divide by 2 DoubleType (lambda): " << dt << std::endl;
 
-    dt.apply(updateValueDouble);
-    std::cout << "updateValueDouble (adds 5): " << dt << std::endl;
+    dt.apply(updateValue<double>); // why do I need to specify <double>? Otherwise it won't work.
+    std::cout << "updateValue (adds 5): " << dt << std::endl;
 
-    IntType it(3);
+    std::cout << "********************" << std::endl;
+
+    Numeric<int> it(3);
     
+    using NumericIt = decltype(it)::myType;
+
     std::cout << "IntType: " << it << std::endl;
     
-    it.apply([&](std::unique_ptr<int>& value) -> IntType&
+    it.apply([&](std::unique_ptr<NumericIt>& value) -> decltype(it)&
             {
                 *value *= 4.5f;
                 return it;
@@ -522,7 +187,7 @@ int main()
     
     std::cout << "Multiply by 4.5f DoubleType (lambda): " << it << std::endl;
 
-    it.apply(updateValueInt);
+    it.apply(updateValue);
     std::cout << "updateValueInt (adds 5): " << it << std::endl;
 
     std::cout << "good to go!" << std::endl;
