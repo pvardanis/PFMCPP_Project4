@@ -207,7 +207,7 @@ void updateValue(std::unique_ptr<numType>& value)
 // template<typename numType>
 struct Point
 {
-    Point(float _x, float _y): x(static_cast<float>(_x)), y(static_cast<float>(_y)) { } // not sure if it's better to do this static_cast inside or outside the class
+    Point(float _x, float _y): x(_x), y(_y) { } // not sure if it's better to do this static_cast inside or outside the class
 
     Point& multiply(float m)
     {
