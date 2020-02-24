@@ -220,7 +220,7 @@ int main()
     
     std::cout << "Multiply by 2 FloatType (lambda): " << ft << std::endl;
 
-    ft.apply(updateValue);
+    ft.apply(updateValue<float>);
     std::cout << "updateValue (adds 5): " << ft << std::endl;
 
     ft += 3; // operation +=
@@ -274,7 +274,7 @@ int main()
     
     std::cout << "Multiply by 4.5f DoubleType (lambda): " << it << std::endl;
 
-    it.apply(updateValue);
+    it.apply(updateValue<int>);
     std::cout << "updateValueInt (adds 5): " << it << std::endl;
     
     it += 5; // operation +=
