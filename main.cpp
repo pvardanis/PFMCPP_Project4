@@ -89,69 +89,52 @@ struct Numeric
         std::cout << "free function" << std::endl;
 
         if(f)
+        {
             f(value); // 5)
-        
+        }
+
         return *this; // 1)
     }
 
     operator myType() const {return *value;} 
 
     template<typename otherType>
-    Numeric& operator+=(otherType myNumber);
+    Numeric& operator+=(otherType myNumber)
+    {
+        *value += myNumber;
+        return *this;
+    }
 
     template<typename otherType>
-    Numeric& operator-=(otherType myNumber);
+    Numeric& operator-=(otherType myNumber)
+    {
+        *value -= myNumber;
+        return *this;
+    }
 
     template<typename otherType>
-    Numeric& operator*=(otherType myNumber);
+    Numeric& operator*=(otherType myNumber)
+    {
+        *value *= myNumber;
+        return *this;
+    }
 
     template<typename otherType>
-    Numeric& operator/=(otherType myNumber);
+    Numeric& operator/=(otherType myNumber)
+    {
+        *value /= myNumber;
+        return *this;
+    }
 
-    Numeric& pow(myType myNumber); // we want this to be the same type as myType, right?
+    Numeric& pow(myType myNumber)
+    {
+        *value = std::pow(*value, myNumber);
+        return *this;
+    }
 
 private:
     std::unique_ptr<myType> value;
 };
-
-template<typename numType>
-template<typename otherType>
-Numeric<numType>& Numeric<numType>::operator+=(otherType myNumber)
-{
-    *value += myNumber;
-    return *this;
-}
-
-template<typename numType>
-template<typename otherType>
-Numeric<numType>& Numeric<numType>::operator-=(otherType myNumber)
-{
-    *value -= myNumber;
-    return *this;
-}
-
-template<typename numType>
-template<typename otherType>
-Numeric<numType>& Numeric<numType>::operator*=(otherType myNumber)
-{
-    *value *= myNumber;
-    return *this;
-}
-
-template<typename numType>
-template<typename otherType>
-Numeric<numType>& Numeric<numType>::operator/=(otherType myNumber)
-{
-    *value /= myNumber;
-    return *this;
-}
-
-template<typename numType>
-Numeric<numType>& Numeric<numType>::pow(numType myNumber)
-{
-    *value = std::pow(*value, myNumber);
-    return *this;
-}
 
 // double
 template<>
@@ -174,58 +157,43 @@ struct Numeric<double>
     operator myType() const {return *value;} 
 
     template<typename otherType>
-    Numeric& operator+=(otherType myNumber);
+    Numeric& operator+=(otherType myNumber)
+    {
+        *value += myNumber;
+        return *this;
+    }
 
     template<typename otherType>
-    Numeric& operator-=(otherType myNumber);
+    Numeric& operator-=(otherType myNumber)
+    {
+        *value -= myNumber;
+        return *this;
+    }
 
     template<typename otherType>
-    Numeric& operator*=(otherType myNumber);
+    Numeric& operator*=(otherType myNumber)
+    {
+        *value *= myNumber;
+        return *this;
+    }
 
     template<typename otherType>
-    Numeric& operator/=(otherType myNumber);
+    Numeric& operator/=(otherType myNumber)
+    {
+        *value /= myNumber;
+        return *this;
+    }
 
     template<typename otherType>
-    Numeric& pow(otherType myNumber);
+    Numeric& pow(otherType myNumber)
+    {
+        *value = std::pow(*value, myNumber);
+        return *this;
+    }
         
 private:
     std::unique_ptr<myType> value;
 };
-
-template<typename otherType>
-Numeric<double>& Numeric<double>::operator+=(otherType myNumber)
-{
-    *value += myNumber;
-    return *this;
-}
-
-template<typename otherType>
-Numeric<double>& Numeric<double>::operator-=(otherType myNumber)
-{
-    *value -= myNumber;
-    return *this;
-}
-
-template<typename otherType>
-Numeric<double>& Numeric<double>::operator*=(otherType myNumber)
-{
-    *value *= myNumber;
-    return *this;
-}
-
-template<typename otherType>
-Numeric<double>& Numeric<double>::operator/=(otherType myNumber)
-{
-    *value /= myNumber;
-    return *this;
-}
-
-template<typename otherType>
-Numeric<double>& Numeric<double>::pow(otherType myNumber)
-{
-    *value = std::pow(*value, myNumber);
-    return *this;
-}
 
 // templated free function
 template<typename numType>
