@@ -66,8 +66,6 @@ If you need to view an example, see: https://bitbucket.org/MatkatMusic/pfmcpptas
 #include <memory>
 
 template<typename numType>
-FIXME no blank lines between template<typename T> and the rest of the templated class/function
-FIXME no blank lines between template<typename T> and the rest of the templated class/function
 struct Numeric
 {
     using myType = numType;
@@ -98,16 +96,65 @@ struct Numeric
 
     operator myType() const {return *value;} 
 
-    FIXME where are all of your pow() functions? 
-    FIXME where are your overloaded math operators?
+    template<typename otherType>
+    Numeric& operator+=(otherType myNumber);
+
+    template<typename otherType>
+    Numeric& operator-=(otherType myNumber);
+
+    template<typename otherType>
+    Numeric& operator*=(otherType myNumber);
+
+    template<typename otherType>
+    Numeric& operator/=(otherType myNumber);
+
+    Numeric& pow(myType myNumber); // we want this to be the same type as myType, right?
 
 private:
     std::unique_ptr<myType> value;
 };
 
+template<typename numType>
+template<typename otherType>
+Numeric<numType>& Numeric<numType>::operator+=(otherType myNumber)
+{
+    *value += myNumber;
+    return *this;
+}
+
+template<typename numType>
+template<typename otherType>
+Numeric<numType>& Numeric<numType>::operator-=(otherType myNumber)
+{
+    *value -= myNumber;
+    return *this;
+}
+
+template<typename numType>
+template<typename otherType>
+Numeric<numType>& Numeric<numType>::operator*=(otherType myNumber)
+{
+    *value *= myNumber;
+    return *this;
+}
+
+template<typename numType>
+template<typename otherType>
+Numeric<numType>& Numeric<numType>::operator/=(otherType myNumber)
+{
+    *value /= myNumber;
+    return *this;
+}
+
+template<typename numType>
+Numeric<numType>& Numeric<numType>::pow(numType myNumber)
+{
+    *value = std::pow(*value, myNumber);
+    return *this;
+}
+
 // double
 template<>
-FIXME no blank lines between template<typename T> and the rest of the templated class/function
 struct Numeric<double>
 {
     using myType = double;
@@ -115,7 +162,6 @@ struct Numeric<double>
     Numeric(myType number_) : value(std::make_unique<myType>(number_)) {} 
     
     template<typename Callable>
-FIXME no blank lines between template<typename T> and the rest of the templated class/function
     Numeric& apply(Callable c)  
     {
         std::cout << "Callable function" << std::endl;
@@ -126,16 +172,64 @@ FIXME no blank lines between template<typename T> and the rest of the templated 
     }
 
     operator myType() const {return *value;} 
+
+    template<typename otherType>
+    Numeric& operator+=(otherType myNumber);
+
+    template<typename otherType>
+    Numeric& operator-=(otherType myNumber);
+
+    template<typename otherType>
+    Numeric& operator*=(otherType myNumber);
+
+    template<typename otherType>
+    Numeric& operator/=(otherType myNumber);
+
+    template<typename otherType>
+    Numeric& pow(otherType myNumber);
         
-    FIXME where are all of your pow() functions? 
-    FIXME where are your overloaded math operators?
 private:
     std::unique_ptr<myType> value;
 };
 
+template<typename otherType>
+Numeric<double>& Numeric<double>::operator+=(otherType myNumber)
+{
+    *value += myNumber;
+    return *this;
+}
+
+template<typename otherType>
+Numeric<double>& Numeric<double>::operator-=(otherType myNumber)
+{
+    *value -= myNumber;
+    return *this;
+}
+
+template<typename otherType>
+Numeric<double>& Numeric<double>::operator*=(otherType myNumber)
+{
+    *value *= myNumber;
+    return *this;
+}
+
+template<typename otherType>
+Numeric<double>& Numeric<double>::operator/=(otherType myNumber)
+{
+    *value /= myNumber;
+    return *this;
+}
+
+template<typename otherType>
+Numeric<double>& Numeric<double>::pow(otherType myNumber)
+{
+    *value = std::pow(*value, myNumber);
+    return *this;
+}
+
 // templated free function
 template<typename numType>
-FIXME no blank lines between template<typename T> and the rest of the templated class/function
+
 void updateValue(std::unique_ptr<numType>& value)
 {
     *value += 5;
@@ -143,7 +237,6 @@ void updateValue(std::unique_ptr<numType>& value)
 
 int main()
 {
-    FIXME Where is your old main that used all of your overloaded math operators and pow() functions?
     std::cout << "********************" << std::endl;   
     Numeric<float> ft(2.5f);
     
@@ -151,10 +244,10 @@ int main()
 
     std::cout << "FloatType: " << ft << std::endl;
     
-    ft.apply([&](std::unique_ptr<NumericFt>& value) -> decltype(ft)& FIXME what exactly are you capturing by reference?
+    ft.apply([&](std::unique_ptr<NumericFt>& value) -> decltype(ft)&
             {
                 *value *= 2;
-                return ft; FIXME return value, not ft. 
+                return ft;
             });
     
     std::cout << "Multiply by 2 FloatType (lambda): " << ft << std::endl;
@@ -162,13 +255,23 @@ int main()
     ft.apply(updateValue);
     std::cout << "updateValue (adds 5): " << ft << std::endl;
 
+    ft += 3; // operation +=
+    ft -= 4.5f; // operation -=
+    ft /= 2; // operation /=
+    ft *= static_cast<float>(2.5); // operation *=
+    std::cout << "+ 3 - 4.5f / 2 * 2.5 = " << ft << std::endl;
+
+    ft.pow(2.5f); // pow
+    std::cout << "pow ^ 2.5f: " << ft << std::endl;
+
+    // double
     Numeric<double> dt(5.75);
     
     std::cout << "********************" << std::endl;
 
     std::cout << "DoubleType: " << dt << std::endl;
     
-    dt.apply([&](std::unique_ptr<double>& value) FIXME what exactly are you capturing by reference?
+    dt.apply([&](std::unique_ptr<double>& value) 
             {
                 *value *= 2;
                 std::cout << "Multiply by 2 DoubleType (lambda): " << *value << std::endl;
@@ -177,24 +280,44 @@ int main()
     dt.apply(updateValue<double>); // why do I need to specify <double>? Otherwise it won't work.
     std::cout << "updateValue (adds 5): " << dt << std::endl;
 
+    dt += 5; // operation +=
+    dt -= 2.5; // operation -=
+    dt /= static_cast<double>(4.5f); // operation /=
+    dt *= 2; // operation *=
+    std::cout << "+ 5 - 2.5 / 4.5f * 2 = " << dt << std::endl;
+
+    dt.pow(4); // pow
+    std::cout << "pow ^ 4: " << dt << std::endl;
+
     std::cout << "********************" << std::endl;
 
+    // int
     Numeric<int> it(3);
     
     using NumericIt = decltype(it)::myType;
 
     std::cout << "IntType: " << it << std::endl;
     
-    it.apply([&](std::unique_ptr<NumericIt>& value) -> decltype(it)& FIXME what exactly are you capturing by reference?
+    it.apply([&](std::unique_ptr<NumericIt>& value) -> decltype(it)&
             {
                 *value *= 4.5f;
-                return it; FIXME return value, not ft. 
+                return it;
             });
     
     std::cout << "Multiply by 4.5f DoubleType (lambda): " << it << std::endl;
 
     it.apply(updateValue);
     std::cout << "updateValueInt (adds 5): " << it << std::endl;
+    
+    it += 5; // operation +=
+    it -= 4.25f; // operation -=
+    it /= 2.5; // operation /=
+    it *= 3; // operation *=
+    std::cout << "+ 5 - 4.25f / 2.5 * 3 = " << it << std::endl;
+
+    it.pow(static_cast<NumericIt>(3.5)); // why do I get a warning here? 
+    std::cout << "pow ^ 3.5: " << it << std::endl; // I don't get what I get implicit conversion here.
+    // I think because in line 305, it has been promoted to double, but I'm not sure.
 
     std::cout << "good to go!" << std::endl;
 
