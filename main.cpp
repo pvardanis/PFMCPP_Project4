@@ -126,9 +126,10 @@ struct Numeric
         return *this;
     }
 
-    Numeric& pow(myType myNumber)
+    template<typename otherType>
+    Numeric& pow(otherType myNumber)
     {
-        *value = std::pow(*value, myNumber);
+        *value = static_cast<myType>(std::pow(*value, myNumber));
         return *this;
     }
 
@@ -142,7 +143,7 @@ struct Numeric<double>
 {
     using myType = double;
 
-    Numeric(myType number_) : value(std::make_unique<myType>(number_)) {} 
+    Numeric(myType number_) : value(std::make_unique<myType>(number_)){} 
     
     template<typename Callable>
     Numeric& apply(Callable c)  
@@ -187,7 +188,7 @@ struct Numeric<double>
     template<typename otherType>
     Numeric& pow(otherType myNumber)
     {
-        *value = std::pow(*value, myNumber);
+        *value = static_cast<double>(std::pow(*value, myNumber));
         return *this;
     }
         
@@ -203,50 +204,27 @@ void updateValue(std::unique_ptr<numType>& value)
     *value += 5;
 }
 
-struct IntType;
-struct FloatType;
-struct DoubleType;
-
+template<typename numType>
 struct Point
 {
-    Point(float, float);
+    using myType = numType;
+    Point(myType _x, myType _y): x(static_cast<float>(_x)), y(static_cast<float>(_y)) { } // not sure if it's better to do this static_cast inside or outside the class
 
-    Point& multiply(float);
-    Point& multiply(const IntType&);
-    Point& multiply(const FloatType&);
-    Point& multiply(const DoubleType&);
-
+    Point& multiply(myType m)
+    {
+        x *= m;
+        y *= m;
+        return *this;
+    }
+    
     void toString();
     
 private:
     float x{0}, y{0};
 };
 
-Point::Point(float _x, float _y) : x(_x), y(_y) { }
-
-Point& Point::multiply(float m)
-{
-    x *= m;
-    y *= m;
-    return *this;
-}
-
-Point& Point::multiply(const IntType& myNumber)
-{
-    return multiply(static_cast<float>(myNumber)); // this needs to be here? 
-}
-
-Point& Point::multiply(const FloatType& myNumber)
-{
-    return multiply(static_cast<float>(myNumber));;
-}
-
-Point& Point::multiply(const DoubleType& myNumber)
-{
-    return multiply(static_cast<float>(myNumber));;
-}
-
-void Point::toString()
+template<typename numType>
+void Point<numType>::toString()
 {
     std::cout << "x: " << x << ", y: " << y << std::endl;
 }
@@ -254,101 +232,63 @@ void Point::toString()
 int part6main()
 {
     // test pow
-    IntType it1(4);
-    FloatType ft1(2.25f);
-    DoubleType dt1(5.4);
+    Numeric<int> it1(4);
+    Numeric<float> ft1(2.25f);
+    Numeric<double> dt1(5.4);
 
-    IntType it2(2);
-    FloatType ft2(5.5f);
-    DoubleType dt2(1.25);
+    Numeric<int> it2(2);
+    Numeric<float> ft2(5.5f);
+    Numeric<double> dt2(1.25);
 
-    IntType it3(3);
-    FloatType ft3(1.15f);
-    DoubleType dt3(3.25); 
+    Numeric<int> it3(3);
+    Numeric<float> ft3(1.15f);
+    Numeric<double> dt3(3.25); 
 
-    // // I put small numbers to prevent overflow
+    // I put small numbers to prevent overflow
 
+    using NumericFt1 = decltype(ft1)::myType;
+    using NumericDt1 = decltype(dt1)::myType;
     std::cout << "Test IntType: " << std::endl;
-    std::cout << "4 ^ 2.25f ^ 5.4  = " << it1.pow(ft1).pow(dt1) << std::endl; 
+    std::cout << "4 ^ 2.25f ^ 5.4  = " << it1.pow(static_cast<NumericFt1>(ft1)).pow(static_cast<NumericDt1>(dt1)) << std::endl; 
 
+    using NumericIt2 = decltype(it2)::myType;
+    using NumericDt2 = decltype(dt2)::myType;
     std::cout << "\nTest FloatType: " << std::endl;
-    std::cout << "5.5f ^ 2 ^ 1.25  = " << ft2.pow(it2).pow(dt2) << std::endl;
+    std::cout << "5.5f ^ 2 ^ 1.25  = " << ft2.pow(static_cast<NumericIt2>(it2)).pow(static_cast<NumericDt2>(dt2)) << std::endl;
 
-    std::cout << "\nTest DoubleType: " << std::endl;
-    std::cout << "3.25 ^ 1.15f ^ 3  = " << dt3.pow(ft3).pow(it3) << std::endl;
+    using NumericFt3 = decltype(it3)::myType;
+    using NumericIt3 = decltype(dt3)::myType;
+    // std::cout << "\nTest DoubleType: " << std::endl;
+    std::cout << "3.25 ^ 1.15f ^ 3  = " << dt3.pow(static_cast<NumericFt3>(ft3)).pow(static_cast<NumericIt3>(it3)) << std::endl;
     std::cout << "\n" << std::endl;
 
     // test Point
-    IntType itp(4);
-    FloatType ftp(5.25f);
-    DoubleType dtp(2.25);
+    Numeric<int> itp(4);
+    Numeric<float> ftp(5.25f);
+    Numeric<double> dtp(2.25);
 
-    Point p1(itp, ftp);
+    Point<float> p1(itp, ftp);
     std::cout << "p1 values: " << std::endl;
     p1.toString();
-    p1.multiply(dtp); 
+    p1.multiply(static_cast<float>(dtp)); 
     std::cout << "\np1 values after multiplication with 2.25: " << std::endl;
     p1.toString();
 
-    Point p2(itp, static_cast<float>(dtp));
+    Point<float> p2(itp, static_cast<float>(dtp));
     std::cout << "\np2 values: " << std::endl;
     p2.toString();
     p2.multiply(ftp); 
     std::cout << "\np2 values after multiplication with 5.25f: " << std::endl;
     p2.toString();
 
-    Point p3(ftp, static_cast<float>(dtp));
+    Point<float> p3(ftp, static_cast<float>(dtp));
     std::cout << "\np3 values: " << std::endl;
     p3.toString();
     p3.multiply(itp); 
     std::cout << "\np3 values after multiplication with 4: " << std::endl;
     p3.toString();
-    FloatType ft(2.5f);
     
-    std::cout << "FloatType: " << ft << std::endl;
-    
-    ft.apply([&](std::unique_ptr<float>& value) -> FloatType&
-            {
-                *value *= 2;
-                return ft;
-            });
-    
-    std::cout << "Multiply by 2 FloatType (lambda): " << ft << std::endl;
-
-    ft.apply(updateValueFloat);
-    std::cout << "updateValueFloat (adds 5): " << ft << std::endl;
-
-    DoubleType dt(5.75);
-    
-    std::cout << "DoubleType: " << dt << std::endl;
-    
-    dt.apply([&](std::unique_ptr<double>& value) -> DoubleType&
-            {
-                *value /= 2;
-                return dt;
-            });
-    
-    std::cout << "Divide by 2 DoubleType (lambda): " << dt << std::endl;
-
-    dt.apply(updateValueDouble);
-    std::cout << "updateValueDouble (adds 5): " << dt << std::endl;
-
-    IntType it(3);
-    
-    std::cout << "IntType: " << it << std::endl;
-    
-    it.apply([&](std::unique_ptr<int>& value) -> IntType&
-            {
-                *value *= 4.5f;
-                return it;
-            });
-    
-    std::cout << "Multiply by 4.5f DoubleType (lambda): " << it << std::endl;
-
-    it.apply(updateValueInt);
-    std::cout << "updateValueInt (adds 5): " << it << std::endl;
-
-    std::cout << "good to go!" << std::endl;
+    // deleted this because it's my new main
 
     return 0;    
 }
@@ -431,10 +371,10 @@ int main()
     it += 5; // operation +=
     it -= 4.25f; // operation -=
     it /= 2.5; // operation /=
-    it *= 3; // operation *=
+    it *= static_cast<int>(3); // operation *=
     std::cout << "+ 5 - 4.25f / 2.5 * 3 = " << it << std::endl;
 
-    it.pow(static_cast<NumericIt>(3.5)); // why do I get a warning here? 
+    it.pow(3.5); // why do I get a warning here? 
     std::cout << "pow ^ 3.5: " << it << std::endl; // I don't get what I get implicit conversion here.
     // I think because in line 305, it has been promoted to double, but I'm not sure.
 
