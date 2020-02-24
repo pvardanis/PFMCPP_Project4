@@ -66,8 +66,8 @@ If you need to view an example, see: https://bitbucket.org/MatkatMusic/pfmcpptas
 #include <memory>
 
 template<typename numType>
-
-// solution
+FIXME no blank lines between template<typename T> and the rest of the templated class/function
+FIXME no blank lines between template<typename T> and the rest of the templated class/function
 struct Numeric
 {
     using myType = numType;
@@ -98,13 +98,16 @@ struct Numeric
 
     operator myType() const {return *value;} 
 
+    FIXME where are all of your pow() functions? 
+    FIXME where are your overloaded math operators?
+
 private:
     std::unique_ptr<myType> value;
 };
 
 // double
 template<>
-
+FIXME no blank lines between template<typename T> and the rest of the templated class/function
 struct Numeric<double>
 {
     using myType = double;
@@ -112,7 +115,7 @@ struct Numeric<double>
     Numeric(myType number_) : value(std::make_unique<myType>(number_)) {} 
     
     template<typename Callable>
-
+FIXME no blank lines between template<typename T> and the rest of the templated class/function
     Numeric& apply(Callable c)  
     {
         std::cout << "Callable function" << std::endl;
@@ -124,13 +127,15 @@ struct Numeric<double>
 
     operator myType() const {return *value;} 
         
+    FIXME where are all of your pow() functions? 
+    FIXME where are your overloaded math operators?
 private:
     std::unique_ptr<myType> value;
 };
 
 // templated free function
 template<typename numType>
-
+FIXME no blank lines between template<typename T> and the rest of the templated class/function
 void updateValue(std::unique_ptr<numType>& value)
 {
     *value += 5;
@@ -138,6 +143,7 @@ void updateValue(std::unique_ptr<numType>& value)
 
 int main()
 {
+    FIXME Where is your old main that used all of your overloaded math operators and pow() functions?
     std::cout << "********************" << std::endl;   
     Numeric<float> ft(2.5f);
     
@@ -145,10 +151,10 @@ int main()
 
     std::cout << "FloatType: " << ft << std::endl;
     
-    ft.apply([&](std::unique_ptr<NumericFt>& value) -> decltype(ft)&
+    ft.apply([&](std::unique_ptr<NumericFt>& value) -> decltype(ft)& FIXME what exactly are you capturing by reference?
             {
                 *value *= 2;
-                return ft;
+                return ft; FIXME return value, not ft. 
             });
     
     std::cout << "Multiply by 2 FloatType (lambda): " << ft << std::endl;
@@ -162,7 +168,7 @@ int main()
 
     std::cout << "DoubleType: " << dt << std::endl;
     
-    dt.apply([&](std::unique_ptr<double>& value) 
+    dt.apply([&](std::unique_ptr<double>& value) FIXME what exactly are you capturing by reference?
             {
                 *value *= 2;
                 std::cout << "Multiply by 2 DoubleType (lambda): " << *value << std::endl;
@@ -179,10 +185,10 @@ int main()
 
     std::cout << "IntType: " << it << std::endl;
     
-    it.apply([&](std::unique_ptr<NumericIt>& value) -> decltype(it)&
+    it.apply([&](std::unique_ptr<NumericIt>& value) -> decltype(it)& FIXME what exactly are you capturing by reference?
             {
                 *value *= 4.5f;
-                return it;
+                return it; FIXME return value, not ft. 
             });
     
     std::cout << "Multiply by 4.5f DoubleType (lambda): " << it << std::endl;
