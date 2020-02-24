@@ -204,13 +204,12 @@ void updateValue(std::unique_ptr<numType>& value)
     *value += 5;
 }
 
-template<typename numType>
+// template<typename numType>
 struct Point
 {
-    using myType = numType;
-    Point(myType _x, myType _y): x(static_cast<float>(_x)), y(static_cast<float>(_y)) { } // not sure if it's better to do this static_cast inside or outside the class
+    Point(float _x, float _y): x(static_cast<float>(_x)), y(static_cast<float>(_y)) { } // not sure if it's better to do this static_cast inside or outside the class
 
-    Point& multiply(myType m)
+    Point& multiply(float m)
     {
         x *= m;
         y *= m;
@@ -223,8 +222,7 @@ private:
     float x{0}, y{0};
 };
 
-template<typename numType>
-void Point<numType>::toString()
+void Point::toString()
 {
     std::cout << "x: " << x << ", y: " << y << std::endl;
 }
@@ -267,21 +265,21 @@ int part6main()
     Numeric<float> ftp(5.25f);
     Numeric<double> dtp(2.25);
 
-    Point<float> p1(itp, ftp);
+    Point p1(itp, ftp);
     std::cout << "p1 values: " << std::endl;
     p1.toString();
     p1.multiply(static_cast<float>(dtp)); 
     std::cout << "\np1 values after multiplication with 2.25: " << std::endl;
     p1.toString();
 
-    Point<float> p2(itp, static_cast<float>(dtp));
+    Point p2(itp, static_cast<float>(dtp));
     std::cout << "\np2 values: " << std::endl;
     p2.toString();
     p2.multiply(ftp); 
     std::cout << "\np2 values after multiplication with 5.25f: " << std::endl;
     p2.toString();
 
-    Point<float> p3(ftp, static_cast<float>(dtp));
+    Point p3(ftp, static_cast<float>(dtp));
     std::cout << "\np3 values: " << std::endl;
     p3.toString();
     p3.multiply(itp); 
