@@ -98,36 +98,31 @@ struct Numeric
 
     operator myType() const {return *value;} 
 
-    template<typename otherType>
-    Numeric& operator+=(otherType myNumber)
+    Numeric& operator+=(myType myNumber)
     {
         *value += myNumber;
         return *this;
     }
 
-    template<typename otherType>
-    Numeric& operator-=(otherType myNumber)
+    Numeric& operator-=(myType myNumber)
     {
         *value -= myNumber;
         return *this;
     }
 
-    template<typename otherType>
-    Numeric& operator*=(otherType myNumber)
+    Numeric& operator*=(myType myNumber)
     {
         *value *= myNumber;
         return *this;
     }
 
-    template<typename otherType>
-    Numeric& operator/=(otherType myNumber)
+    Numeric& operator/=(myType myNumber)
     {
         *value /= myNumber;
         return *this;
     }
 
-    template<typename otherType>
-    Numeric& pow(otherType myNumber)
+    Numeric& pow(myType myNumber)
     {
         *value = static_cast<myType>(std::pow(*value, myNumber));
         return *this;
@@ -157,36 +152,31 @@ struct Numeric<double>
 
     operator myType() const {return *value;} 
 
-    template<typename otherType>
-    Numeric& operator+=(otherType myNumber)
+    Numeric& operator+=(myType myNumber)
     {
         *value += myNumber;
         return *this;
     }
 
-    template<typename otherType>
-    Numeric& operator-=(otherType myNumber)
+    Numeric& operator-=(myType myNumber)
     {
         *value -= myNumber;
         return *this;
     }
 
-    template<typename otherType>
-    Numeric& operator*=(otherType myNumber)
+    Numeric& operator*=(myType myNumber)
     {
         *value *= myNumber;
         return *this;
     }
 
-    template<typename otherType>
-    Numeric& operator/=(otherType myNumber)
+    Numeric& operator/=(myType myNumber)
     {
         *value /= myNumber;
         return *this;
     }
 
-    template<typename otherType>
-    Numeric& pow(otherType myNumber)
+    Numeric& pow(myType myNumber)
     {
         *value = static_cast<double>(std::pow(*value, myNumber));
         return *this;
@@ -243,10 +233,8 @@ int part6main()
 
     // I put small numbers to prevent overflow
 
-    using NumericFt1 = decltype(ft1)::myType;
-    using NumericDt1 = decltype(dt1)::myType;
     std::cout << "Test IntType: " << std::endl;
-    std::cout << "4 ^ 2.25f ^ 5.4  = " << it1.pow(static_cast<NumericFt1>(ft1)).pow(static_cast<NumericDt1>(dt1)) << std::endl; 
+    std::cout << "4 ^ 2.25f ^ 5.4  = " << it1.pow(ft1).pow(dt1) << std::endl; 
 
     using NumericIt2 = decltype(it2)::myType;
     using NumericDt2 = decltype(dt2)::myType;
