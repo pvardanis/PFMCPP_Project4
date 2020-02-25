@@ -118,11 +118,24 @@ struct Numeric
 
     Numeric& operator/=(myType myNumber)
     {
-        *value /= myNumber;
+        if (myNumber == 0.f)
+        {
+            if (std::is_same<myType, int>::value) 
+            {
+                std::cout << "Divided by int 0!" << std::endl;
+                return *this;
+            }
+            else
+            {
+                std::cout << "Dividing by 0!" << std::endl;
+            }
+        }
+
+        *value /= myNumber; 
         return *this;
     }
 
-    Numeric& pow(myType myNumber)
+    Numeric& pow(const myType& myNumber)
     {
         *value = static_cast<myType>(std::pow(*value, myNumber));
         return *this;
@@ -172,7 +185,20 @@ struct Numeric<double>
 
     Numeric& operator/=(myType myNumber)
     {
-        *value /= myNumber;
+        if (myNumber == 0.)
+        {
+            if (std::is_same<myType, int>::value) 
+            {
+                std::cout << "Divided by int 0!" << std::endl;
+                return *this;
+            }
+            else
+            {
+                std::cout << "Dividing by 0!" << std::endl;
+            }
+        }
+        
+        *value /= myNumber; 
         return *this;
     }
 
@@ -234,12 +260,10 @@ int part6main()
     // I put small numbers to prevent overflow
 
     std::cout << "Test IntType: " << std::endl;
-    std::cout << "4 ^ 2.25f ^ 5.4  = " << it1.pow(ft1).pow(dt1) << std::endl; 
+    std::cout << "4 ^ 2.25f ^ 5.4  = " << it1.pow(static_cast<int>(ft1)).pow(static_cast<int>(dt1)) << std::endl; 
 
-    using NumericIt2 = decltype(it2)::myType;
-    using NumericDt2 = decltype(dt2)::myType;
     std::cout << "\nTest FloatType: " << std::endl;
-    std::cout << "5.5f ^ 2 ^ 1.25  = " << ft2.pow(static_cast<NumericIt2>(it2)).pow(static_cast<NumericDt2>(dt2)) << std::endl;
+    std::cout << "5.5f ^ 2 ^ 1.25  = " << ft2.pow(static_cast<float>(it2)).pow(static_cast<float>(dt2)) << std::endl;
 
     using NumericFt3 = decltype(it3)::myType;
     using NumericIt3 = decltype(dt3)::myType;
@@ -354,14 +378,13 @@ int main()
     std::cout << "updateValueInt (adds 5): " << it << std::endl;
     
     it += 5; // operation +=
-    it -= 4.25f; // operation -=
-    it /= 2.5; // operation /=
-    it *= static_cast<int>(3); // operation *=
+    it -= static_cast<NumericIt>(4.25f); // operation -=
+    it /= static_cast<NumericIt>(2.5); // operation /=
+    it *= 3; // operation *=
     std::cout << "+ 5 - 4.25f / 2.5 * 3 = " << it << std::endl;
 
-    it.pow(3.5); // why do I get a warning here? 
-    std::cout << "pow ^ 3.5: " << it << std::endl; // I don't get what I get implicit conversion here.
-    // I think because in line 305, it has been promoted to double, but I'm not sure.
+    it.pow(static_cast<NumericIt>(3.5));  
+    std::cout << "pow ^ 3.5: " << it << std::endl; 
 
     std::cout << "good to go!" << std::endl;
 
