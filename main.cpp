@@ -27,7 +27,12 @@ Create a branch named Part8
  1) Here is a starting point for how to implement your Temporary struct.
  */
 
+#include <iostream>
+#include <cmath>
+#include <functional>
+#include <memory>
 #include <typeinfo>
+
 template<typename NumericType>
 struct Temporary
 {
@@ -40,8 +45,8 @@ struct Temporary
      revise these conversion functions to read/write to 'v' here
      hint: what qualifier do read-only functions usually have?
      */
-    operator ___() { /* read-only function */ }
-    operator ___() { /* read/write function */ }
+    operator NumericType() const { return v; } // not a pointer as before
+    operator NumericType&() { return v; }
 private:
     static int counter;
     NumericType v;
@@ -52,25 +57,28 @@ private:
     Remember the rules about how to define a Template member variable/function outside of the class.
 */
 
+template<typename NumericType>
+int Temporary<NumericType>::counter = 0;
+
 /*
  3) You'll need to template your overloaded math operator functions in your Templated Class from Ch5 p04
     use static_cast to convert whatever type is passed in to your template's NumericType before performing the +=, -=, etc.  here's an example implementation:
  */
-namespace example
-{
-template<typename NumericType>
-struct Numeric
-{
-    //snip
-    template<typename OtherType>
-    Numeric& operator-=(const OtherType& o) 
-    { 
-        *value -= static_cast<NumericType>(o); 
-        return *this; 
-    }
-    //snip
-};
-}
+// namespace example
+// {
+// template<typename NumericType>
+// struct Numeric
+// {
+//     //snip
+//     template<typename OtherType>
+//     Numeric& operator-=(const OtherType& o) 
+//     { 
+//         *value -= static_cast<NumericType>(o); 
+//         return *this; 
+//     }
+//     //snip
+// };
+// }
 
 /*
  4) remove your specialized <double> template of your Numeric<T> class from the previous task (ch5 p04)
@@ -89,15 +97,10 @@ struct Numeric
     See the previous hint for implementing the conversion functions for the Temporary if you want to get the held value
  */
 
-#include <iostream>
-#include <cmath>
-#include <functional>
-#include <memory>
-
-template<typename numType>
+template<typename NumericType>
 struct Numeric
 {
-    using myType = numType;
+    using myType = Temporary<NumericType>; // 
 
     Numeric(myType number_) : value(std::make_unique<myType>(number_)) {} 
     
@@ -112,6 +115,8 @@ struct Numeric
         
         return *this; // 1)
     }
+
+    ~Numeric() {}
     
     Numeric& apply(void(*f)(std::unique_ptr<myType>&)) // 1), 3), 4) 
     {
@@ -125,27 +130,41 @@ struct Numeric
         return *this; // 1)
     }
 
-    operator myType() const {return *value;} 
+    // Conversion
+    operator NumericType() const {return *value;} 
+    operator NumericType&() {return *value;} 
 
-    Numeric& operator+=(myType myNumber)
+    // Assignment operators
+    template<typename OtherType>
+    Numeric& operator=(const OtherType& myNumber)
     {
-        *value += myNumber;
+        *value = static_cast<NumericType>(myNumber);
         return *this;
     }
 
-    Numeric& operator-=(myType myNumber)
+    template<typename OtherType>
+    Numeric& operator+=(const OtherType& myNumber)
     {
-        *value -= myNumber;
+        *value += static_cast<NumericType>(myNumber);
         return *this;
     }
 
-    Numeric& operator*=(myType myNumber)
+    template<typename OtherType>
+    Numeric& operator-=(const OtherType& myNumber)
     {
-        *value *= myNumber;
+        *value -= static_cast<NumericType>(myNumber);
         return *this;
     }
 
-    Numeric& operator/=(myType myNumber)
+    template<typename OtherType>
+    Numeric& operator*=(const OtherType& myNumber)
+    {
+        *value *= static_cast<NumericType>(myNumber);
+        return *this;
+    }
+
+    template<typename OtherType>
+    Numeric& operator/=(const OtherType& myNumber)
     {
         if (myNumber == 0.f)
         {
@@ -160,83 +179,17 @@ struct Numeric
             }
         }
 
-        *value /= myNumber; 
+        *value /= static_cast<NumericType>(myNumber); 
         return *this;
     }
 
-    Numeric& pow(const myType& myNumber)
+    template<typename OtherType>
+    Numeric& pow(const OtherType& myNumber)
     {
-        *value = static_cast<myType>(std::pow(*value, myNumber));
+        *value = std::pow(*value, static_cast<NumericType>(myNumber));
         return *this;
     }
 
-private:
-    std::unique_ptr<myType> value;
-};
-
-// double
-template<>
-struct Numeric<double>
-{
-    using myType = double;
-
-    Numeric(myType number_) : value(std::make_unique<myType>(number_)){} 
-    
-    template<typename Callable>
-    Numeric& apply(Callable c)  
-    {
-        std::cout << "Callable function" << std::endl;
-        
-        c(value); 
-        
-        return *this; 
-    }
-
-    operator myType() const {return *value;} 
-
-    Numeric& operator+=(myType myNumber)
-    {
-        *value += myNumber;
-        return *this;
-    }
-
-    Numeric& operator-=(myType myNumber)
-    {
-        *value -= myNumber;
-        return *this;
-    }
-
-    Numeric& operator*=(myType myNumber)
-    {
-        *value *= myNumber;
-        return *this;
-    }
-
-    Numeric& operator/=(myType myNumber)
-    {
-        if (myNumber == 0.)
-        {
-            if (std::is_same<myType, int>::value) 
-            {
-                std::cout << "Divided by int 0!" << std::endl;
-                return *this;
-            }
-            else
-            {
-                std::cout << "Dividing by 0!" << std::endl;
-            }
-        }
-        
-        *value /= myNumber; 
-        return *this;
-    }
-
-    Numeric& pow(myType myNumber)
-    {
-        *value = static_cast<double>(std::pow(*value, myNumber));
-        return *this;
-    }
-        
 private:
     std::unique_ptr<myType> value;
 };
@@ -246,6 +199,12 @@ template<typename numType>
 void updateValue(std::unique_ptr<numType>& value)
 {
     *value += 5;
+}
+
+template<typename numType>
+void cube(std::unique_ptr<numType>& value)
+{
+    *value = *value * *value * *value;
 }
 
 struct Point
@@ -298,7 +257,7 @@ int main()
     d *= -1;
     std::cout << "d: " << d << std::endl;
     
-    p.multiply(d.pow(f).pow(i));
+    p.multiply(static_cast<float>(d.pow(static_cast<double>(f)).pow(static_cast<double>(i))));
     std::cout << "d: " << d << std::endl;
     
     p.toString();
@@ -306,11 +265,11 @@ int main()
     Numeric<float> floatNum(4.3f);
     Numeric<int> intNum(2);
     Numeric<int> intNum2(6);
-    intNum = 2 + (intNum2 - 4) + floatNum / 2.3;
+    intNum = 2 + (intNum2 - 4) + static_cast<double>(floatNum) / 2.3;
     std::cout << "intNum: " << intNum << std::endl;
     
     {
-        using Type = decltype(f)::Type;
+        using Type = decltype(f)::myType;
         f.apply([&f](std::unique_ptr<Type>&value) -> decltype(f)&
                 {
                     auto& v = *value;
@@ -324,7 +283,7 @@ int main()
     }
     
     {
-        using Type = decltype(d)::Type;
+        using Type = decltype(d)::myType;
         d.apply([&d](std::unique_ptr<Type>&value) -> decltype(d)&
                 {
                     auto& v = *value;
@@ -338,7 +297,7 @@ int main()
     }
     
     {
-        using Type = decltype(i)::Type;
+        using Type = decltype(i)::myType;
         i.apply([&i](std::unique_ptr<Type>&value) -> decltype(i)&
                 {
                     auto& v = *value;
@@ -351,6 +310,7 @@ int main()
         std::cout << "i cubed: " << i << std::endl;
     }
 }
+
 /*
  If you did everything correctly, this is the output you should get:
  
