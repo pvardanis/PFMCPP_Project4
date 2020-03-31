@@ -100,11 +100,11 @@ int Temporary<NumericType>::counter = 0;
 template<typename NumericType>
 struct Numeric
 {
-    using myType = Temporary<NumericType>; // 
+    using MyType = Temporary<NumericType>; // 
 
-    Numeric(myType number_) : value(std::make_unique<myType>(number_)) {} 
+    Numeric(MyType number_) : value(std::make_unique<MyType>(number_)) {} 
     
-    Numeric& apply(std::function<Numeric&(std::unique_ptr<myType>&)> f)  
+    Numeric& apply(std::function<Numeric&(std::unique_ptr<MyType>&)> f)  
     {
         std::cout << "std::function<>" << std::endl;
 
@@ -118,7 +118,7 @@ struct Numeric
 
     ~Numeric() {}
     
-    Numeric& apply(void(*f)(std::unique_ptr<myType>&)) // 1), 3), 4) 
+    Numeric& apply(void(*f)(std::unique_ptr<MyType>&)) // 1), 3), 4) 
     {
         std::cout << "free function" << std::endl;
 
@@ -166,17 +166,31 @@ struct Numeric
     template<typename OtherType>
     Numeric& operator/=(const OtherType& myNumber)
     {
-        if (myNumber == 0.f)
+        if (std::is_same<NumericType, int>::value) // had to change this now, because implicitly converting
+        // types could affect value (and epsilon)
         {
-            if (std::is_same<myType, int>::value) 
+            if (std::is_same<OtherType, int>::value) 
             {
-                std::cout << "Divided by int 0!" << std::endl;
+                if (static_cast<int>(myNumber) == 0) // we already now it's int, so 
+                // don't bother with the warning I guess? Or use static_cast
+                {
+                    std::cout << "Dividing by int 0!  Don't do the division!" << std::endl;
+                    return *this;
+                }
+            }
+            else if (std::abs(myNumber) <= std::numeric_limits<OtherType>::epsilon())
+            {
+                std::cout << "Dividing by a value smaller then epsilon! Don't do the division!" << std::endl;
                 return *this;
             }
-            else
-            {
-                std::cout << "Dividing by 0!" << std::endl;
-            }
+        }
+        // else if MyNumber is float or double
+        else if (std::abs(myNumber) <= std::numeric_limits<OtherType>::epsilon())
+        {
+            // do the division, but give a warning
+            std::cout << "Warning! Dividing by a value smaller than epsilon!" << std::endl;
+            *value /= static_cast<NumericType>(myNumber); 
+            return *this;
         }
 
         *value /= static_cast<NumericType>(myNumber); 
@@ -191,7 +205,7 @@ struct Numeric
     }
 
 private:
-    std::unique_ptr<myType> value;
+    std::unique_ptr<MyType> value;
 };
 
 // templated free function
@@ -269,7 +283,7 @@ int main()
     std::cout << "intNum: " << intNum << std::endl;
     
     {
-        using Type = decltype(f)::myType;
+        using Type = decltype(f)::MyType;
         f.apply([&f](std::unique_ptr<Type>&value) -> decltype(f)&
                 {
                     auto& v = *value;
@@ -283,7 +297,7 @@ int main()
     }
     
     {
-        using Type = decltype(d)::myType;
+        using Type = decltype(d)::MyType;
         d.apply([&d](std::unique_ptr<Type>&value) -> decltype(d)&
                 {
                     auto& v = *value;
@@ -297,7 +311,7 @@ int main()
     }
     
     {
-        using Type = decltype(i)::myType;
+        using Type = decltype(i)::MyType;
         i.apply([&i](std::unique_ptr<Type>&value) -> decltype(i)&
                 {
                     auto& v = *value;
