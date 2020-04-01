@@ -166,10 +166,10 @@ struct Numeric
     template<typename OtherType>
     Numeric& operator/=(const OtherType& myNumber)
     {
-        if (std::is_same<NumericType, int>::value) // had to change this now, because implicitly converting
+        if constexpr(std::is_same<NumericType, int>::value) // had to change this now, because implicitly converting
         // types could affect value (and epsilon)
         {
-            if (std::is_same<OtherType, int>::value) 
+            if constexpr(std::is_same<OtherType, int>::value) 
             {
                 if (static_cast<int>(myNumber) == 0) // we already now it's int, so 
                 // don't bother with the warning I guess? Or use static_cast
