@@ -100,7 +100,7 @@ int Temporary<NumericType>::counter = 0;
 template<typename NumericType>
 struct Numeric
 {
-    using MyType = Temporary<NumericType>; // 
+    using MyType = Temporary<NumericType>; 
 
     Numeric(MyType number_) : value(std::make_unique<MyType>(number_)) {} 
     
@@ -110,24 +110,24 @@ struct Numeric
 
         if(f)
         {
-            return f(value);  // 5)
+            return f(value);  
         }
         
-        return *this; // 1)
+        return *this; 
     }
 
     ~Numeric() {}
     
-    Numeric& apply(void(*f)(std::unique_ptr<MyType>&)) // 1), 3), 4) 
+    Numeric& apply(void(*f)(std::unique_ptr<MyType>&))
     {
         std::cout << "free function" << std::endl;
 
         if(f)
         {
-            f(value); // 5)
+            f(value); 
         }
 
-        return *this; // 1)
+        return *this; 
     }
 
     // Conversion
@@ -166,13 +166,11 @@ struct Numeric
     template<typename OtherType>
     Numeric& operator/=(const OtherType& myNumber)
     {
-        if constexpr(std::is_same<NumericType, int>::value) // had to change this now, because implicitly converting
-        // types could affect value (and epsilon)
+        if constexpr(std::is_same<NumericType, int>::value) 
         {
             if constexpr(std::is_same<OtherType, int>::value) 
             {
-                if (myNumber == 0) // we already now it's int, so 
-                // don't bother with the warning I guess? Or use static_cast
+                if (myNumber == 0)
                 {
                     std::cout << "Dividing by int 0!  Don't do the division!" << std::endl;
                     return *this;
