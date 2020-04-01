@@ -171,7 +171,7 @@ struct Numeric
         {
             if constexpr(std::is_same<OtherType, int>::value) 
             {
-                if (static_cast<int>(myNumber) == 0) // we already now it's int, so 
+                if (myNumber == 0) // we already now it's int, so 
                 // don't bother with the warning I guess? Or use static_cast
                 {
                     std::cout << "Dividing by int 0!  Don't do the division!" << std::endl;
