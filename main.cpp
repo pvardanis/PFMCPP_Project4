@@ -187,8 +187,6 @@ struct Numeric
         {
             // do the division, but give a warning
             std::cout << "Warning! Dividing by a value smaller than epsilon!" << std::endl;
-            *value /= static_cast<NumericType>(myNumber); 
-            return *this;
         }
 
         *value /= static_cast<NumericType>(myNumber); 
